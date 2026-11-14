@@ -8,6 +8,11 @@
 // hosting already compresses at the edge.
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+import netlify from "@netlify/vite-plugin-tanstack-start";
+
+// When building on Netlify, skip the Nitro/Cloudflare server output and let the
+// official Netlify plugin produce the SSR function instead. Lovable builds are unchanged.
+const isNetlify = !!process.env.NETLIFY;
 
 export default defineConfig({
   tanstackStart: {
@@ -15,4 +20,5 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  ...(isNetlify ? { nitro: false, vite: { plugins: [netlify()] } } : {}),
 });
