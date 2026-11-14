@@ -6,7 +6,7 @@ export function PageHeader({
   description,
   actions,
 }: {
-  eyebrow?: string;
+  eyebrow?: string | undefined;
   title: string;
   description?: ReactNode;
   actions?: ReactNode;
@@ -27,7 +27,7 @@ export function PageHeader({
   );
 }
 
-export function SectionTitle({ title, description, action }: { title: string; description?: string; action?: ReactNode }) {
+export function SectionTitle({ title, description, action }: { title: string; description?: string | undefined; action?: ReactNode }) {
   return (
     <div className="mb-4 flex items-start justify-between gap-3">
       <div>

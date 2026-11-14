@@ -196,8 +196,8 @@ export function cumulativeComparison(
   let previousToDate = 0;
   const series: { day: number; current: number | null; previous: number | null }[] = [];
   for (let i = 0; i < len; i++) {
-    if (i < cur.length) c += cur[i].total;
-    if (i < prev.length) p += prev[i].total;
+    if (i < cur.length) c += cur[i]?.total ?? 0;
+    if (i < prev.length) p += prev[i]?.total ?? 0;
     if (i < elapsed && i < prev.length) previousToDate = p;
     series.push({
       day: i + 1,

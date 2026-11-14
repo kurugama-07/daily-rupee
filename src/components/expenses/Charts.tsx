@@ -28,7 +28,7 @@ interface TipProps {
   payload?: TipEntry[];
   label?: string | number;
   currency: string;
-  labelFormat?: (label: string | number) => string;
+  labelFormat?: ((label: string | number) => string) | undefined;
 }
 
 function ChartTip({ active, payload, label, currency, labelFormat }: TipProps) {
@@ -119,9 +119,9 @@ export function DailyBarChart({
 }: {
   data: { label: string; total: number; date: string }[];
   currency: string;
-  highlight?: string;
+  highlight?: string | undefined;
   height?: number;
-  labelFormat?: (label: string | number) => string;
+  labelFormat?: ((label: string | number) => string) | undefined;
 }) {
   return (
     <ResponsiveContainer width="100%" height={height}>
