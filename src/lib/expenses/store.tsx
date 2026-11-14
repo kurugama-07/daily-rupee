@@ -111,7 +111,7 @@ export function ExpenseProvider({
       const category: Category = {
         id: `custom-${newId()}`,
         name: name.trim(),
-        color: CHART_PALETTE[(data.customCategories.length + 3) % CHART_PALETTE.length],
+        color: CHART_PALETTE[(data.customCategories.length + 3) % CHART_PALETTE.length] ?? "var(--chart-10)",
         builtIn: false,
       };
       setData((d) => ({ ...d, customCategories: [...d.customCategories, category] }));

@@ -42,7 +42,7 @@ function DailyPage() {
   const pickDate = (key: string) => {
     if (!key) return;
     setSelected(key);
-    const [y, m] = key.split("-").map(Number);
+    const [y = now.getFullYear(), m = now.getMonth() + 1] = key.split("-").map(Number);
     setYm({ year: y, month: m - 1 });
   };
 
