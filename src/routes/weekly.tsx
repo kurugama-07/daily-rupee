@@ -234,7 +234,7 @@ function WeeklyPage() {
           <Card className="p-5 sm:p-6">
             <SectionTitle title="Recent weeks" description="Tap a week to see it" />
             <MonthlyBarChart
-              data={history.map((h) => ({ key: h.start, label: format(parseISO(h.start), "d MMM"), total: h.total }))}
+              data={history.map((h) => ({ key: h.start, label: format(parseISO(h.start), "d/M"), total: h.total }))}
               currency={cur}
               activeKey={weekStart}
               height={180}
