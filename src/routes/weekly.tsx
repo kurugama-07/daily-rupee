@@ -157,7 +157,7 @@ function WeeklyPage() {
           <div className="grid grid-cols-2 gap-3 sm:gap-4">
             <StatCard label="Spent" icon={Wallet} value={formatMoney(w.total, cur)} hint={rangeLabel(weekStart)} />
             {s && isCurrent ? (
-              <StatCard label="Safe to spend / day" icon={CalendarClock} value={formatMoney(perDay, cur)} hint={`For the next ${daysLeft} day${daysLeft === 1 ? "" : "s"}`} />
+              <StatCard label="Safe to spend / day" icon={CalendarClock} value={formatMoney(perDay, cur)} hint={daysLeft === 1 ? "For the rest of today" : `For the next ${daysLeft} days`} />
             ) : (
               <StatCard
                 label="Avg. per day"
