@@ -12,7 +12,7 @@ import netlify from "@netlify/vite-plugin-tanstack-start";
 
 // When building on Netlify, skip the Nitro/Cloudflare server output and let the
 // official Netlify plugin produce the SSR function instead. Lovable builds are unchanged.
-const isNetlify = !!process.env.NETLIFY;
+const isNetlify = !!process.env["NETLIFY"];
 
 export default defineConfig({
   tanstackStart: {
