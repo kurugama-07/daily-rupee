@@ -134,6 +134,11 @@ function SettingsPage() {
           </Card>
 
           <Card className="p-5 sm:p-6">
+            <SectionTitle title="Weekly budget" />
+            <BudgetSettingsForm period="week" />
+          </Card>
+
+          <Card className="p-5 sm:p-6">
             <SectionTitle title="Your data" description="Saved on this device in your browser" />
             <div className="space-y-3">
               <div className="flex items-center justify-between gap-3 rounded-xl bg-muted p-3.5">

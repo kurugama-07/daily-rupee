@@ -19,9 +19,20 @@ export function BudgetBar({ status, className }: { status: BudgetStatus; classNa
   );
 }
 
-export function BudgetAlert({ status, currency }: { status: BudgetStatus; currency: string }) {
+export type BudgetPeriod = "month" | "week";
+
+export function BudgetAlert({
+  status,
+  currency,
+  period = "month",
+}: {
+  status: BudgetStatus;
+  currency: string;
+  period?: BudgetPeriod;
+}) {
   if (status.level === "ok") return null;
   const exceeded = status.level === "exceeded";
+  const adj = period === "week" ? "weekly" : "monthly";
   return (
     <div
       role="alert"
@@ -32,11 +43,11 @@ export function BudgetAlert({ status, currency }: { status: BudgetStatus; curren
     >
       {exceeded ? <CircleAlert className="mt-0.5 size-4 shrink-0" /> : <AlertTriangle className="mt-0.5 size-4 shrink-0" />}
       <div>
-        <p className="font-semibold">{exceeded ? "Budget exceeded" : "You've used over 80% of your budget"}</p>
+        <p className="font-semibold">{exceeded ? `${period === "week" ? "Weekly" : "Monthly"} budget exceeded` : `You've used over 80% of your ${adj} budget`}</p>
         <p className="mt-0.5 opacity-90">
           {exceeded
-            ? `You're ${formatMoney(Math.abs(status.remaining), currency)} over your monthly limit.`
-            : `Only ${formatMoney(status.remaining, currency)} left for this month — spend carefully.`}
+            ? `You're ${formatMoney(Math.abs(status.remaining), currency)} over your ${adj} limit.`
+            : `Only ${formatMoney(status.remaining, currency)} left for this ${period} — spend carefully.`}
         </p>
       </div>
     </div>

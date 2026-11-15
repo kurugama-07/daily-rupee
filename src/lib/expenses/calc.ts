@@ -1,4 +1,4 @@
-import { endOfWeek, format, getDaysInMonth, startOfWeek, subMonths } from "date-fns";
+import { addDays, endOfWeek, format, getDaysInMonth, parseISO, startOfWeek, subMonths, subWeeks } from "date-fns";
 
 import { BUDGET_WARNING_PERCENT } from "./constants";
 import type { Expense } from "./types";
@@ -38,6 +38,45 @@ export function weekRange(today: Date) {
     start: toDateKey(startOfWeek(today, { weekStartsOn: 1 })),
     end: toDateKey(endOfWeek(today, { weekStartsOn: 1 })),
   };
+}
+
+/** Monday of the week containing the given date, as yyyy-MM-dd. */
+export function weekStartKey(d: Date): string {
+  return toDateKey(startOfWeek(d, { weekStartsOn: 1 }));
+}
+
+/** Days left in the current week, counting today (Monday = 7, Sunday = 1). */
+export function daysLeftInWeek(today: Date): number {
+  return 7 - ((today.getDay() + 6) % 7);
+}
+
+/** Seven day totals, Monday to Sunday, for the week starting at weekStart. */
+export function weekDailyTotals(list: readonly Expense[], weekStart: string): DayTotal[] {
+  const start = parseISO(weekStart);
+  return Array.from({ length: 7 }, (_, i) => {
+    const date = toDateKey(addDays(start, i));
+    const items = list.filter((e) => e.date === date);
+    return { date, day: i + 1, total: sumAmounts(items), count: items.length };
+  });
+}
+
+export interface WeekTotal {
+  start: string;
+  end: string;
+  total: number;
+  count: number;
+}
+
+/** Totals for the last `count` weeks ending with the week containing `today`, oldest first. */
+export function weeklyHistory(list: readonly Expense[], today: Date, count: number): WeekTotal[] {
+  const current = startOfWeek(today, { weekStartsOn: 1 });
+  return Array.from({ length: count }, (_, idx) => {
+    const s = subWeeks(current, count - 1 - idx);
+    const start = toDateKey(s);
+    const end = toDateKey(addDays(s, 6));
+    const items = expensesInRange(list, start, end);
+    return { start, end, total: sumAmounts(items), count: items.length };
+  });
 }
 
 /** Days of the month that have already happened (full month for past months, 0 for future). */

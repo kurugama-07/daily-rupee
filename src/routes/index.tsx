@@ -77,6 +77,7 @@ function DashboardPage() {
     const prevTotal = sumAmounts(prevList);
     const cumulative = cumulativeComparison(expenses, y, m, today);
     const breakdown = categoryBreakdown(monthList);
+    const weekTotal = sumAmounts(expensesInRange(expenses, week.start, week.end));
     return {
       today,
       todayKey,
@@ -84,7 +85,8 @@ function DashboardPage() {
       prevMonthName: MONTH_NAMES[prev.getMonth()],
       todayTotal: sumAmounts(expenses.filter((e) => e.date === todayKey)),
       todayCount: expenses.filter((e) => e.date === todayKey).length,
-      weekTotal: sumAmounts(expensesInRange(expenses, week.start, week.end)),
+      weekTotal,
+      weekBudget: settings.weeklyBudgetEnabled ? budgetStatus(weekTotal, settings.weeklyBudget) : null,
       monthTotal,
       prevTotal,
       avgDaily: averageDailySpending(expenses, y, m, today),
@@ -100,7 +102,7 @@ function DashboardPage() {
         .slice(0, 6),
       budget: settings.budgetEnabled ? budgetStatus(monthTotal, settings.monthlyBudget) : null,
     };
-  }, [expenses, settings.budgetEnabled, settings.monthlyBudget]);
+  }, [expenses, settings.budgetEnabled, settings.monthlyBudget, settings.weeklyBudgetEnabled, settings.weeklyBudget]);
 
   const up = (s.changeToDate ?? 0) > 0;
   const maxCompare = Math.max(s.monthTotal, s.prevTotal, 1);
@@ -140,7 +142,25 @@ function DashboardPage() {
           }
         />
         <StatCard label="Today" icon={Sun} value={formatMoney(s.todayTotal, cur)} hint={`${s.todayCount} expense${s.todayCount === 1 ? "" : "s"}`} />
-        <StatCard label="This week" icon={CalendarRange} value={formatMoney(s.weekTotal, cur)} hint="Since Monday" />
+        <Link to="/weekly" className="block rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+          <StatCard
+            className="h-full transition hover:border-primary/40"
+            label="This week"
+            icon={CalendarRange}
+            value={formatMoney(s.weekTotal, cur)}
+            hint={
+              s.weekBudget ? (
+                <span className={cn(s.weekBudget.remaining < 0 && "font-semibold text-destructive")}>
+                  {s.weekBudget.remaining >= 0
+                    ? `${formatMoney(s.weekBudget.remaining, cur)} left of ${formatMoney(s.weekBudget.budget, cur)}`
+                    : `${formatMoney(-s.weekBudget.remaining, cur)} over limit`}
+                </span>
+              ) : (
+                "Since Monday"
+              )
+            }
+          />
+        </Link>
         <StatCard label="Avg. per day" icon={TrendingUp} value={formatMoney(Math.round(s.avgDaily), cur)} hint={`Over ${s.today.getDate()} days`} />
         <StatCard label="Transactions" icon={Hash} value={s.count} hint={`In ${s.monthName}`} />
       </div>
@@ -185,6 +205,17 @@ function DashboardPage() {
                   : `${formatPercent(s.changeToDate, true)} (${formatMoney(s.cumulative.previousToDate, cur)} by this day)`}
               </p>
             </div>
+            {s.weekBudget && (
+              <div className="border-t pt-4">
+                <p className="mb-3 text-sm font-semibold">Weekly budget</p>
+                <BudgetSummary status={s.weekBudget} currency={cur} />
+                {s.weekBudget.level !== "ok" && (
+                  <div className="mt-3">
+                    <BudgetAlert status={s.weekBudget} currency={cur} period="week" />
+                  </div>
+                )}
+              </div>
+            )}
             {s.budget && (
               <div className="border-t pt-4">
                 <p className="mb-3 text-sm font-semibold">Monthly budget</p>

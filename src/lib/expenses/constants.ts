@@ -52,6 +52,8 @@ export const DEFAULT_SETTINGS: Settings = {
   currency: "LKR",
   monthlyBudget: null,
   budgetEnabled: false,
+  weeklyBudget: null,
+  weeklyBudgetEnabled: false,
 };
 
 export const QUICK_PICKS: { title: string; category: string }[] = [

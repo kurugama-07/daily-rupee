@@ -28,3 +28,8 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project rules
+
+- Monthly and weekly budgets share `budgetStatus` in `src/lib/expenses/calc.ts`; add new budget periods there, not in components — keeps warning thresholds identical everywhere.
+- Weeks run Monday to Sunday (`weekStartsOn: 1`) in every calculation — dashboard, weekly page and budgets must agree on "this week".

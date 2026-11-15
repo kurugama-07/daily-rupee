@@ -8,9 +8,33 @@ import { Switch } from "@/components/ui/switch";
 import { useExpenses } from "@/lib/expenses/store";
 import { parseBudget } from "@/lib/expenses/validation";
 
-export function BudgetSettingsForm() {
+import type { BudgetPeriod } from "./Budget";
+
+const COPY: Record<BudgetPeriod, { toggle: string; hint: string; label: string; placeholder: string; saved: string }> = {
+  month: {
+    toggle: "Track a monthly budget",
+    hint: "Optional — get warnings at 80% and when you go over.",
+    label: "Monthly spending limit",
+    placeholder: "e.g. 100000",
+    saved: "Monthly budget saved",
+  },
+  week: {
+    toggle: "Track a weekly budget",
+    hint: "Resets every Monday. Warns at 80% and when you go over.",
+    label: "Weekly spending limit",
+    placeholder: "e.g. 5000",
+    saved: "Weekly budget saved",
+  },
+};
+
+export function BudgetSettingsForm({ period = "month" }: { period?: BudgetPeriod }) {
   const { settings, updateSettings } = useExpenses();
-  const [value, setValue] = useState(settings.monthlyBudget ? String(settings.monthlyBudget) : "");
+  const weekly = period === "week";
+  const amount = weekly ? settings.weeklyBudget : settings.monthlyBudget;
+  const enabled = weekly ? settings.weeklyBudgetEnabled : settings.budgetEnabled;
+  const copy = COPY[period];
+  const id = `budget-${period}`;
+  const [value, setValue] = useState(amount ? String(amount) : "");
   const [error, setError] = useState<string | null>(null);
 
   function save(e: FormEvent) {
@@ -21,34 +45,36 @@ export function BudgetSettingsForm() {
       toast.error(res.error);
       return;
     }
-    updateSettings({ monthlyBudget: res.value, budgetEnabled: true });
+    updateSettings(
+      weekly ? { weeklyBudget: res.value, weeklyBudgetEnabled: true } : { monthlyBudget: res.value, budgetEnabled: true },
+    );
     setError(null);
-    toast.success("Monthly budget saved");
+    toast.success(copy.saved);
   }
 
   return (
     <form onSubmit={save} className="space-y-4" noValidate>
       <div className="flex items-center justify-between gap-4 rounded-xl bg-muted p-3.5">
         <div>
-          <p className="text-sm font-semibold">Track a monthly budget</p>
-          <p className="text-xs text-muted-foreground">Optional — get warnings at 80% and when you go over.</p>
+          <p className="text-sm font-semibold">{copy.toggle}</p>
+          <p className="text-xs text-muted-foreground">{copy.hint}</p>
         </div>
         <Switch
-          checked={settings.budgetEnabled}
-          aria-label="Track a monthly budget"
+          checked={enabled}
+          aria-label={copy.toggle}
           onCheckedChange={(on) => {
-            if (on && !settings.monthlyBudget) {
+            if (on && !amount) {
               setError("Enter a budget amount first");
               return;
             }
-            updateSettings({ budgetEnabled: on });
+            updateSettings(weekly ? { weeklyBudgetEnabled: on } : { budgetEnabled: on });
             toast.success(on ? "Budget tracking turned on" : "Budget tracking turned off");
           }}
         />
       </div>
       <div>
-        <Label htmlFor="budget" className="mb-2 block text-sm font-semibold">
-          Monthly spending limit
+        <Label htmlFor={id} className="mb-2 block text-sm font-semibold">
+          {copy.label}
         </Label>
         <div className="flex gap-2">
           <div className="relative flex-1">
@@ -56,9 +82,9 @@ export function BudgetSettingsForm() {
               {settings.currency}
             </span>
             <Input
-              id="budget"
+              id={id}
               inputMode="decimal"
-              placeholder="e.g. 100000"
+              placeholder={copy.placeholder}
               value={value}
               aria-invalid={!!error}
               className="pl-14 font-semibold tabular-nums"

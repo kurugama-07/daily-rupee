@@ -1,15 +1,15 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { getDaysInMonth } from "date-fns";
 import { CalendarClock, PiggyBank, Target, TrendingUp, Wallet } from "lucide-react";
 import { useMemo } from "react";
 
-import { BudgetAlert, BudgetBar } from "@/components/expenses/Budget";
+import { BudgetAlert, BudgetBar, BudgetSummary } from "@/components/expenses/Budget";
 import { BudgetSettingsForm } from "@/components/expenses/BudgetSettingsForm";
 import { EmptyState } from "@/components/expenses/EmptyState";
 import { PageHeader, SectionTitle } from "@/components/expenses/PageHeader";
 import { StatCard } from "@/components/expenses/StatCard";
 import { Card } from "@/components/ui/card";
-import { averageDailySpending, budgetStatus, expensesInMonth, sumAmounts } from "@/lib/expenses/calc";
+import { averageDailySpending, budgetStatus, expensesInMonth, expensesInRange, sumAmounts, weekRange } from "@/lib/expenses/calc";
 import { MONTH_NAMES } from "@/lib/expenses/constants";
 import { formatMoney } from "@/lib/expenses/format";
 import { useExpenses } from "@/lib/expenses/store";
@@ -22,6 +22,8 @@ export const Route = createFileRoute("/budget")({
       { name: "description", content: "Set an optional monthly spending limit and see how much you have left." },
       { property: "og:title", content: "Monthly Budget — Sage Expense Tracker" },
       { property: "og:description", content: "Set an optional monthly spending limit and see how much you have left." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: BudgetPage,
@@ -45,8 +47,10 @@ function BudgetPage() {
       daysLeft,
       projected: Math.round(avg * dim),
       status: budgetStatus(spent, settings.monthlyBudget),
+      week: budgetStatus(sumAmounts(expensesInRange(expenses, weekRange(today).start, weekRange(today).end)), settings.weeklyBudget),
     };
-  }, [expenses, settings.monthlyBudget]);
+  }, [expenses, settings.monthlyBudget, settings.weeklyBudget]);
+  const wk = settings.weeklyBudgetEnabled ? b.week : null;
 
   const s = settings.budgetEnabled ? b.status : null;
   const perDay = s && s.remaining > 0 ? Math.floor(s.remaining / b.daysLeft) : 0;
@@ -129,10 +133,33 @@ function BudgetPage() {
           )}
         </div>
 
-        <Card className="h-fit p-5 sm:p-6 lg:col-span-2">
-          <SectionTitle title="Budget settings" />
-          <BudgetSettingsForm />
-        </Card>
+        <div className="space-y-5 lg:col-span-2">
+          <Card className="p-5 sm:p-6">
+            <SectionTitle title="Monthly budget" />
+            <BudgetSettingsForm />
+          </Card>
+          <Card className="p-5 sm:p-6">
+            <SectionTitle
+              title="Weekly budget"
+              action={
+                <Link to="/weekly" className="text-xs font-semibold text-primary hover:underline">
+                  See this week
+                </Link>
+              }
+            />
+            {wk && (
+              <div className="mb-5">
+                <BudgetSummary status={wk} currency={cur} />
+                {wk.level !== "ok" && (
+                  <div className="mt-3">
+                    <BudgetAlert status={wk} currency={cur} period="week" />
+                  </div>
+                )}
+              </div>
+            )}
+            <BudgetSettingsForm period="week" />
+          </Card>
+        </div>
       </div>
     </>
   );
