@@ -1,6 +1,15 @@
 import { describe, expect, it } from "vitest";
 
-import { averageDailySpending, budgetStatus, dailyStats, weekRange } from "./calc";
+import {
+  averageDailySpending,
+  budgetStatus,
+  dailyStats,
+  daysLeftInWeek,
+  weekDailyTotals,
+  weekRange,
+  weekStartKey,
+  weeklyHistory,
+} from "./calc";
 import type { Expense } from "./types";
 import { parseBudget, parseExpenseInput } from "./validation";
 
@@ -82,5 +91,34 @@ describe("expense validation", () => {
   });
   it("rejects a zero budget", () => {
     expect(parseBudget("0").ok).toBe(false);
+  });
+});
+
+describe("weekly budget", () => {
+  it("counts down what's left from a 5,000 weekly limit", () => {
+    const list = [mk("2026-11-09", 1200), mk("2026-11-11", 800)];
+    const spent = weekDailyTotals(list, "2026-11-09").reduce((t, d) => t + d.total, 0);
+    const s = budgetStatus(spent, 5000);
+    expect(s?.remaining).toBe(3000);
+    expect(s?.level).toBe("ok");
+  });
+  it("ignores spending from other weeks", () => {
+    const list = [mk("2026-11-08", 900), mk("2026-11-16", 400), mk("2026-11-10", 500)];
+    const days = weekDailyTotals(list, weekStartKey(today));
+    expect(days).toHaveLength(7);
+    expect(days[0]?.date).toBe("2026-11-09");
+    expect(days.reduce((t, d) => t + d.total, 0)).toBe(500);
+  });
+  it("goes over once the week's spending passes the limit", () => {
+    expect(budgetStatus(5200, 5000)?.remaining).toBe(-200);
+    expect(budgetStatus(5200, 5000)?.level).toBe("exceeded");
+  });
+  it("counts days left including today (Monday 7, Sunday 1)", () => {
+    expect(daysLeftInWeek(new Date(2026, 10, 9))).toBe(7);
+    expect(daysLeftInWeek(new Date(2026, 10, 15))).toBe(1);
+  });
+  it("totals recent weeks oldest first", () => {
+    const h = weeklyHistory([mk("2026-11-03", 700), mk("2026-11-12", 300)], today, 2);
+    expect(h.map((w) => [w.start, w.total])).toEqual([["2026-11-02", 700], ["2026-11-09", 300]]);
   });
 });
