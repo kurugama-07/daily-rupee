@@ -73,6 +73,6 @@ export function createInitialData(today: Date): AppData {
     version: 1,
     expenses: generateSampleExpenses(today),
     customCategories: [],
-    settings: { currency: "LKR", monthlyBudget: 120000, budgetEnabled: true },
+    settings: { currency: "LKR", monthlyBudget: 120000, budgetEnabled: true, weeklyBudget: null, weeklyBudgetEnabled: false },
   };
 }
