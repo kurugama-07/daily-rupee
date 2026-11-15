@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import {
   BarChart3,
   CalendarDays,
+  CalendarRange,
   LayoutDashboard,
   Leaf,
   MoreHorizontal,
@@ -15,18 +16,19 @@ import { useState, type ReactNode } from "react";
 
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
-import { expensesInMonth, sumAmounts } from "@/lib/expenses/calc";
+import { budgetStatus, expensesInMonth, expensesInRange, sumAmounts, weekRange } from "@/lib/expenses/calc";
 import { formatMoney } from "@/lib/expenses/format";
 import { useExpenses } from "@/lib/expenses/store";
 import { cn } from "@/lib/utils";
 
-type NavPath = "/" | "/add" | "/history" | "/daily" | "/analytics" | "/budget" | "/settings";
+type NavPath = "/" | "/add" | "/history" | "/daily" | "/weekly" | "/analytics" | "/budget" | "/settings";
 
 const NAV: { to: NavPath; label: string; icon: LucideIcon }[] = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
   { to: "/add", label: "Add Expense", icon: Plus },
   { to: "/history", label: "Expense History", icon: ReceiptText },
   { to: "/daily", label: "Daily Breakdown", icon: CalendarDays },
+  { to: "/weekly", label: "Weekly Spending", icon: CalendarRange },
   { to: "/analytics", label: "Analytics", icon: BarChart3 },
   { to: "/budget", label: "Budget", icon: Wallet },
   { to: "/settings", label: "Settings", icon: Settings },
@@ -58,10 +60,21 @@ function MonthMini() {
   const now = new Date();
   if (!hydrated) return null;
   const total = sumAmounts(expensesInMonth(expenses, now.getFullYear(), now.getMonth()));
+  const wk = weekRange(now);
+  const week = settings.weeklyBudgetEnabled
+    ? budgetStatus(sumAmounts(expensesInRange(expenses, wk.start, wk.end)), settings.weeklyBudget)
+    : null;
   return (
     <div className="rounded-2xl bg-sidebar-accent p-4">
       <p className="text-xs text-sidebar-foreground/65">Spent this month</p>
       <p className="mt-1 text-lg font-bold tabular-nums text-sidebar-accent-foreground">{formatMoney(total, settings.currency)}</p>
+      {week && (
+        <p className="mt-1 text-xs text-sidebar-foreground/65">
+          {week.remaining >= 0
+            ? `${formatMoney(week.remaining, settings.currency)} left this week`
+            : `${formatMoney(-week.remaining, settings.currency)} over this week`}
+        </p>
+      )}
       <Link
         to="/add"
         className="mt-3 flex h-10 items-center justify-center gap-2 rounded-xl bg-sidebar-primary text-sm font-semibold text-sidebar-primary-foreground transition hover:opacity-90"
@@ -119,7 +132,7 @@ function MobileBottomNav() {
   const [moreOpen, setMoreOpen] = useState(false);
   const left = NAV.filter((n) => n.to === "/" || n.to === "/history");
   const right = NAV.filter((n) => n.to === "/daily");
-  const more = NAV.filter((n) => n.to === "/analytics" || n.to === "/budget" || n.to === "/settings");
+  const more = NAV.filter((n) => n.to === "/weekly" || n.to === "/analytics" || n.to === "/budget" || n.to === "/settings");
   const navLink = (item: (typeof NAV)[number]) => (
     <Link
       key={item.to}
@@ -159,7 +172,7 @@ function MobileBottomNav() {
           <SheetHeader>
             <SheetTitle className="font-display text-xl font-medium">More</SheetTitle>
           </SheetHeader>
-          <div className="mt-2 grid grid-cols-3 gap-3 px-4">
+          <div className="mt-2 grid grid-cols-2 gap-3 px-4">
             {more.map((item) => (
               <Link
                 key={item.to}
