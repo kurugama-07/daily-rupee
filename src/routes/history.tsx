@@ -23,9 +23,9 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/history")({
   head: () => ({
     meta: [
-      { title: "Expense History — Sage Expense Tracker" },
+      { title: "Expense History — RupeeFlow Expense Tracker" },
       { name: "description", content: "Search, filter, edit and delete every expense you've recorded." },
-      { property: "og:title", content: "Expense History — Sage Expense Tracker" },
+      { property: "og:title", content: "Expense History — RupeeFlow Expense Tracker" },
       { property: "og:description", content: "Search, filter, edit and delete every expense you've recorded." },
     ],
   }),

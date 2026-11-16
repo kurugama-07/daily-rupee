@@ -45,9 +45,9 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Dashboard — Sage Expense Tracker" },
+      { title: "Dashboard — RupeeFlow Expense Tracker" },
       { name: "description", content: "Today, this week and this month's spending at a glance, with charts and recent expenses." },
-      { property: "og:title", content: "Dashboard — Sage Expense Tracker" },
+      { property: "og:title", content: "Dashboard — RupeeFlow Expense Tracker" },
       { property: "og:description", content: "Today, this week and this month's spending at a glance, with charts and recent expenses." },
     ],
   }),

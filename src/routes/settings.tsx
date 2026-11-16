@@ -31,9 +31,9 @@ import type { Category } from "@/lib/expenses/types";
 export const Route = createFileRoute("/settings")({
   head: () => ({
     meta: [
-      { title: "Settings — Sage Expense Tracker" },
+      { title: "Settings — RupeeFlow Expense Tracker" },
       { name: "description", content: "Appearance, currency, budgets, categories, CSV export and data management." },
-      { property: "og:title", content: "Settings — Sage Expense Tracker" },
+      { property: "og:title", content: "Settings — RupeeFlow Expense Tracker" },
       { property: "og:description", content: "Appearance, currency, budgets, categories, CSV export and data management." },
     ],
   }),

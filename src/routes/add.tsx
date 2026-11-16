@@ -12,9 +12,9 @@ import { useExpenses } from "@/lib/expenses/store";
 export const Route = createFileRoute("/add")({
   head: () => ({
     meta: [
-      { title: "Add Expense — Sage Expense Tracker" },
+      { title: "Add Expense — RupeeFlow Expense Tracker" },
       { name: "description", content: "Record an expense in seconds: name, amount, category and payment method." },
-      { property: "og:title", content: "Add Expense — Sage Expense Tracker" },
+      { property: "og:title", content: "Add Expense — RupeeFlow Expense Tracker" },
       { property: "og:description", content: "Record an expense in seconds: name, amount, category and payment method." },
     ],
   }),

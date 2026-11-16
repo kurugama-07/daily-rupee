@@ -18,9 +18,9 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/daily")({
   head: () => ({
     meta: [
-      { title: "Daily Breakdown — Sage Expense Tracker" },
+      { title: "Daily Breakdown — RupeeFlow Expense Tracker" },
       { name: "description", content: "See exactly what you spent each day, with daily totals and your highest and lowest days." },
-      { property: "og:title", content: "Daily Breakdown — Sage Expense Tracker" },
+      { property: "og:title", content: "Daily Breakdown — RupeeFlow Expense Tracker" },
       { property: "og:description", content: "See exactly what you spent each day, with daily totals and your highest and lowest days." },
     ],
   }),

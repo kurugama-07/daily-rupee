@@ -47,7 +47,7 @@ function Brand({ inverted }: { inverted?: boolean }) {
         <Leaf />
       </span>
       <span className="leading-tight">
-        <span className="block font-display text-xl font-medium">Sage</span>
+        <span className="block font-display text-xl font-medium">RupeeFlow</span>
         <span className={cn("block text-[11px]", inverted ? "text-sidebar-foreground/60" : "text-muted-foreground")}>
           Personal expenses
         </span>
