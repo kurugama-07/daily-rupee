@@ -32,9 +32,9 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/weekly")({
   head: () => ({
     meta: [
-      { title: "Weekly Spending — Sage Expense Tracker" },
+      { title: "Weekly Spending — RupeeFlow Expense Tracker" },
       { name: "description", content: "See what you spent each week, set a weekly limit and watch what's left count down." },
-      { property: "og:title", content: "Weekly Spending — Sage Expense Tracker" },
+      { property: "og:title", content: "Weekly Spending — RupeeFlow Expense Tracker" },
       { property: "og:description", content: "See what you spent each week, set a weekly limit and watch what's left count down." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

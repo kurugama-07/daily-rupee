@@ -87,12 +87,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "theme-color", content: "#2f4f44" },
-      { title: "Sage — Personal Expense Tracker" },
+      { title: "RupeeFlow — Personal Expense Tracker" },
       {
         name: "description",
         content: "Track everyday expenses in LKR, see daily and monthly spending, and stay on budget.",
       },
-      { property: "og:title", content: "Sage — Personal Expense Tracker" },
+      { property: "og:title", content: "RupeeFlow — Personal Expense Tracker" },
       {
         property: "og:description",
         content: "Track everyday expenses in LKR, see daily and monthly spending, and stay on budget.",

@@ -29,9 +29,9 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/analytics")({
   head: () => ({
     meta: [
-      { title: "Monthly Analytics — Sage Expense Tracker" },
+      { title: "Monthly Analytics — RupeeFlow Expense Tracker" },
       { name: "description", content: "Monthly totals, category breakdowns, daily trends and month-to-month comparisons." },
-      { property: "og:title", content: "Monthly Analytics — Sage Expense Tracker" },
+      { property: "og:title", content: "Monthly Analytics — RupeeFlow Expense Tracker" },
       { property: "og:description", content: "Monthly totals, category breakdowns, daily trends and month-to-month comparisons." },
     ],
   }),
