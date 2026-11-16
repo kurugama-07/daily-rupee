@@ -35,7 +35,7 @@ export function StatCard({
           <span
             className={cn(
               "inline-flex size-8 items-center justify-center rounded-lg [&_svg]:size-4",
-              primary ? "bg-hero-foreground/15 text-primary-foreground" : "bg-primary-soft text-primary",
+              primary ? "bg-hero-foreground/15 text-hero-foreground" : "bg-primary-soft text-primary",
             )}
           >
             <Icon />
