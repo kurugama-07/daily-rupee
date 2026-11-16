@@ -156,7 +156,7 @@ function DashboardPage() {
                     : `${formatMoney(-s.weekBudget.remaining, cur)} over limit`}
                 </span>
               ) : (
-                "Since Monday"
+                "Since Sunday"
               )
             }
           />

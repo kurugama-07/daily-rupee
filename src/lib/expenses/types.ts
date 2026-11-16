@@ -32,7 +32,7 @@ export interface Settings {
   currency: string;
   monthlyBudget: number | null;
   budgetEnabled: boolean;
-  /** Optional spending limit for each Monday–Sunday week */
+  /** Optional spending limit for each Sunday–Saturday week */
   weeklyBudget: number | null;
   weeklyBudgetEnabled: boolean;
 }

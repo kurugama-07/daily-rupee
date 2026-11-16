@@ -100,7 +100,7 @@ function WeeklyPage() {
       <PageHeader
         eyebrow={isCurrent ? "This week" : rangeLabel(weekStart)}
         title="Weekly spending"
-        description="Monday to Sunday. Set a limit and watch what's left count down."
+        description="Sunday to Saturday. Set a limit and watch what's left count down."
         actions={
           <div className="flex items-center gap-1 rounded-xl border bg-card p-1">
             <Button variant="ghost" size="icon" aria-label="Previous week" onClick={() => setWeekStart(toDateKey(subWeeks(parseISO(weekStart), 1)))}>
