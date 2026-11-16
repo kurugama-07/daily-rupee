@@ -125,29 +125,29 @@ function WeeklyPage() {
           <div className="relative overflow-hidden rounded-2xl hero-gradient p-5 text-hero-foreground shadow-float sm:p-6">
             {s ? (
               <>
-                <p className="text-sm font-semibold text-primary-foreground/80">
+                <p className="text-sm font-semibold text-hero-foreground/80">
                   {s.remaining >= 0 ? "Left to spend" : "Over your weekly limit"}
                 </p>
                 <p className="mt-1 font-display text-5xl font-medium tabular-nums">{formatMoney(Math.abs(s.remaining), cur)}</p>
-                <p className="mt-1 text-sm text-primary-foreground/80">
+                <p className="mt-1 text-sm text-hero-foreground/80">
                   Spent {formatMoney(s.spent, cur)} of {formatMoney(s.budget, cur)}
                 </p>
-                <div className="mt-5 h-3 w-full overflow-hidden rounded-full bg-primary-foreground/20">
+                <div className="mt-5 h-3 w-full overflow-hidden rounded-full bg-hero-foreground/20">
                   <div
-                    className={cn("h-full rounded-full transition-all duration-700", s.level === "exceeded" ? "bg-destructive" : "bg-primary-foreground")}
+                    className={cn("h-full rounded-full transition-all duration-700", s.level === "exceeded" ? "bg-destructive" : "bg-hero-foreground")}
                     style={{ width: `${Math.max(0, 100 - Math.min(s.percent, 100))}%` }}
                   />
                 </div>
-                <div className="mt-2 flex justify-between text-[11px] text-primary-foreground/75">
+                <div className="mt-2 flex justify-between text-[11px] text-hero-foreground/75">
                   <span>{s.percent.toFixed(0)}% used</span>
                   <span>{isCurrent ? `${daysLeft} day${daysLeft === 1 ? "" : "s"} left this week` : rangeLabel(weekStart)}</span>
                 </div>
               </>
             ) : (
               <>
-                <p className="text-sm font-semibold text-primary-foreground/80">Spent {isCurrent ? "this week" : "that week"}</p>
+                <p className="text-sm font-semibold text-hero-foreground/80">Spent {isCurrent ? "this week" : "that week"}</p>
                 <p className="mt-1 font-display text-5xl font-medium tabular-nums">{formatMoney(w.total, cur)}</p>
-                <p className="mt-1 text-sm text-primary-foreground/80">Set a weekly limit on the right to see how much you have left.</p>
+                <p className="mt-1 text-sm text-hero-foreground/80">Set a weekly limit on the right to see how much you have left.</p>
               </>
             )}
           </div>

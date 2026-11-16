@@ -28,14 +28,14 @@ export function StatCard({
       )}
     >
       <div className="flex items-start justify-between gap-2">
-        <p className={cn("text-xs font-semibold sm:text-sm", primary ? "text-primary-foreground/80" : "text-muted-foreground")}>
+        <p className={cn("text-xs font-semibold sm:text-sm", primary ? "text-hero-foreground/80" : "text-muted-foreground")}>
           {label}
         </p>
         {Icon && (
           <span
             className={cn(
               "inline-flex size-8 items-center justify-center rounded-lg [&_svg]:size-4",
-              primary ? "bg-primary-foreground/15 text-primary-foreground" : "bg-primary-soft text-primary",
+              primary ? "bg-hero-foreground/15 text-primary-foreground" : "bg-primary-soft text-primary",
             )}
           >
             <Icon />
@@ -44,7 +44,7 @@ export function StatCard({
       </div>
       <p className="mt-3 truncate text-xl font-bold tabular-nums tracking-tight sm:text-2xl">{value}</p>
       {hint && (
-        <div className={cn("mt-1 text-xs", primary ? "text-primary-foreground/75" : "text-muted-foreground")}>
+        <div className={cn("mt-1 text-xs", primary ? "text-hero-foreground/75" : "text-muted-foreground")}>
           {hint}
         </div>
       )}
