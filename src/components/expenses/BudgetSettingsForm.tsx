@@ -20,7 +20,7 @@ const COPY: Record<BudgetPeriod, { toggle: string; hint: string; label: string; 
   },
   week: {
     toggle: "Track a weekly budget",
-    hint: "Resets every Monday. Warns at 80% and when you go over.",
+    hint: "Resets every Sunday. Warns at 80% and when you go over.",
     label: "Weekly spending limit",
     placeholder: "e.g. 5000",
     saved: "Weekly budget saved",

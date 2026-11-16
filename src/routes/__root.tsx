@@ -13,6 +13,7 @@ import { useEffect, type ReactNode } from "react";
 import { AppShell } from "@/components/expenses/AppShell";
 import { Toaster } from "@/components/ui/sonner";
 import { ExpenseProvider } from "@/lib/expenses/store";
+import { THEME_INIT_SCRIPT } from "@/lib/theme";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -121,8 +122,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <HeadContent />
       </head>
       <body>
