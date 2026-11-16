@@ -96,7 +96,7 @@ function DailyPage() {
         <Card className="h-fit p-5 lg:sticky lg:top-8 lg:col-span-2">
           <SectionTitle title="Look up a day" description="Pick any date to see what you spent" />
           <Input type="date" value={selected} max={todayKey} onChange={(e) => pickDate(e.target.value)} aria-label="Select date" />
-          <div className="mt-5 rounded-2xl hero-gradient p-5 text-primary-foreground">
+          <div className="mt-5 rounded-2xl hero-gradient p-5 text-hero-foreground">
             <p className="text-xs text-primary-foreground/75">{formatDateLong(selected)}</p>
             <p className="mt-1 text-2xl font-bold tabular-nums">{formatMoney(sumAmounts(dayList), cur)}</p>
             <p className="text-xs text-primary-foreground/75">

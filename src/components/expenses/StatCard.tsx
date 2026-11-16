@@ -23,7 +23,7 @@ export function StatCard({
     <div
       className={cn(
         "relative overflow-hidden rounded-2xl border p-4 sm:p-5",
-        primary ? "hero-gradient border-transparent text-primary-foreground shadow-float" : "bg-card shadow-card",
+        primary ? "hero-gradient border-transparent text-hero-foreground shadow-float" : "bg-card shadow-card",
         className,
       )}
     >

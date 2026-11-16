@@ -122,7 +122,7 @@ function WeeklyPage() {
 
       <div className="grid gap-5 lg:grid-cols-5">
         <div className="space-y-5 lg:col-span-3">
-          <div className="relative overflow-hidden rounded-2xl hero-gradient p-5 text-primary-foreground shadow-float sm:p-6">
+          <div className="relative overflow-hidden rounded-2xl hero-gradient p-5 text-hero-foreground shadow-float sm:p-6">
             {s ? (
               <>
                 <p className="text-sm font-semibold text-primary-foreground/80">
