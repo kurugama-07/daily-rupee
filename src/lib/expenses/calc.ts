@@ -32,25 +32,28 @@ export function expensesOnDate(list: readonly Expense[], dateKey: string) {
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 }
 
-/** Weeks start on Monday. */
+/** Weeks run Sunday to Saturday (0 = Sunday). Change here only. */
+export const WEEK_STARTS_ON = 0 as const;
+
+/** Weeks start on Sunday. */
 export function weekRange(today: Date) {
   return {
-    start: toDateKey(startOfWeek(today, { weekStartsOn: 1 })),
-    end: toDateKey(endOfWeek(today, { weekStartsOn: 1 })),
+    start: toDateKey(startOfWeek(today, { weekStartsOn: WEEK_STARTS_ON })),
+    end: toDateKey(endOfWeek(today, { weekStartsOn: WEEK_STARTS_ON })),
   };
 }
 
-/** Monday of the week containing the given date, as yyyy-MM-dd. */
+/** Sunday of the week containing the given date, as yyyy-MM-dd. */
 export function weekStartKey(d: Date): string {
-  return toDateKey(startOfWeek(d, { weekStartsOn: 1 }));
+  return toDateKey(startOfWeek(d, { weekStartsOn: WEEK_STARTS_ON }));
 }
 
-/** Days left in the current week, counting today (Monday = 7, Sunday = 1). */
+/** Days left in the current week, counting today (Sunday = 7, Saturday = 1). */
 export function daysLeftInWeek(today: Date): number {
-  return 7 - ((today.getDay() + 6) % 7);
+  return 7 - ((today.getDay() - WEEK_STARTS_ON + 7) % 7);
 }
 
-/** Seven day totals, Monday to Sunday, for the week starting at weekStart. */
+/** Seven day totals, Sunday to Saturday, for the week starting at weekStart. */
 export function weekDailyTotals(list: readonly Expense[], weekStart: string): DayTotal[] {
   const start = parseISO(weekStart);
   return Array.from({ length: 7 }, (_, i) => {
@@ -69,7 +72,7 @@ export interface WeekTotal {
 
 /** Totals for the last `count` weeks ending with the week containing `today`, oldest first. */
 export function weeklyHistory(list: readonly Expense[], today: Date, count: number): WeekTotal[] {
-  const current = startOfWeek(today, { weekStartsOn: 1 });
+  const current = startOfWeek(today, { weekStartsOn: WEEK_STARTS_ON });
   return Array.from({ length: count }, (_, idx) => {
     const s = subWeeks(current, count - 1 - idx);
     const start = toDateKey(s);

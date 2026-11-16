@@ -48,8 +48,11 @@ describe("budget warnings", () => {
 });
 
 describe("week", () => {
-  it("starts on Monday", () => {
-    expect(weekRange(today)).toEqual({ start: "2026-11-09", end: "2026-11-15" });
+  it("runs Sunday to Saturday", () => {
+    expect(weekRange(today)).toEqual({ start: "2026-11-08", end: "2026-11-14" });
+  });
+  it("starts a new week on Sunday", () => {
+    expect(weekRange(new Date(2026, 10, 15))).toEqual({ start: "2026-11-15", end: "2026-11-21" });
   });
 });
 
@@ -96,29 +99,29 @@ describe("expense validation", () => {
 
 describe("weekly budget", () => {
   it("counts down what's left from a 5,000 weekly limit", () => {
-    const list = [mk("2026-11-09", 1200), mk("2026-11-11", 800)];
-    const spent = weekDailyTotals(list, "2026-11-09").reduce((t, d) => t + d.total, 0);
+    const list = [mk("2026-11-08", 1200), mk("2026-11-11", 800)];
+    const spent = weekDailyTotals(list, "2026-11-08").reduce((t, d) => t + d.total, 0);
     const s = budgetStatus(spent, 5000);
     expect(s?.remaining).toBe(3000);
     expect(s?.level).toBe("ok");
   });
   it("ignores spending from other weeks", () => {
-    const list = [mk("2026-11-08", 900), mk("2026-11-16", 400), mk("2026-11-10", 500)];
+    const list = [mk("2026-11-07", 900), mk("2026-11-15", 400), mk("2026-11-10", 500)];
     const days = weekDailyTotals(list, weekStartKey(today));
     expect(days).toHaveLength(7);
-    expect(days[0]?.date).toBe("2026-11-09");
+    expect(days[0]?.date).toBe("2026-11-08");
     expect(days.reduce((t, d) => t + d.total, 0)).toBe(500);
   });
   it("goes over once the week's spending passes the limit", () => {
     expect(budgetStatus(5200, 5000)?.remaining).toBe(-200);
     expect(budgetStatus(5200, 5000)?.level).toBe("exceeded");
   });
-  it("counts days left including today (Monday 7, Sunday 1)", () => {
-    expect(daysLeftInWeek(new Date(2026, 10, 9))).toBe(7);
-    expect(daysLeftInWeek(new Date(2026, 10, 15))).toBe(1);
+  it("counts days left including today (Sunday 7, Saturday 1)", () => {
+    expect(daysLeftInWeek(new Date(2026, 10, 8))).toBe(7);
+    expect(daysLeftInWeek(new Date(2026, 10, 14))).toBe(1);
   });
   it("totals recent weeks oldest first", () => {
     const h = weeklyHistory([mk("2026-11-03", 700), mk("2026-11-12", 300)], today, 2);
-    expect(h.map((w) => [w.start, w.total])).toEqual([["2026-11-02", 700], ["2026-11-09", 300]]);
+    expect(h.map((w) => [w.start, w.total])).toEqual([["2026-11-01", 700], ["2026-11-08", 300]]);
   });
 });

@@ -7,6 +7,7 @@ import { BudgetSettingsForm } from "@/components/expenses/BudgetSettingsForm";
 import { CategoryIcon } from "@/components/expenses/CategoryIcon";
 import { PageHeader, SectionTitle } from "@/components/expenses/PageHeader";
 import { RemoveSampleButton } from "@/components/expenses/SampleDataBanner";
+import { ThemeSegmented } from "@/components/expenses/ThemeToggle";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,9 +32,9 @@ export const Route = createFileRoute("/settings")({
   head: () => ({
     meta: [
       { title: "Settings — Sage Expense Tracker" },
-      { name: "description", content: "Currency, budget, categories, CSV export and data management." },
+      { name: "description", content: "Appearance, currency, budgets, categories, CSV export and data management." },
       { property: "og:title", content: "Settings — Sage Expense Tracker" },
-      { property: "og:description", content: "Currency, budget, categories, CSV export and data management." },
+      { property: "og:description", content: "Appearance, currency, budgets, categories, CSV export and data management." },
     ],
   }),
   component: SettingsPage,
@@ -110,6 +111,11 @@ function SettingsPage() {
       <PageHeader eyebrow="Preferences" title="Settings" />
       <div className="grid gap-5 lg:grid-cols-2">
         <div className="space-y-5">
+          <Card className="p-5 sm:p-6">
+            <SectionTitle title="Appearance" description="Auto follows your phone or computer setting" />
+            <ThemeSegmented className="sm:w-80" />
+          </Card>
+
           <Card className="p-5 sm:p-6">
             <SectionTitle title="Currency" description="Shown next to every amount" />
             <Select

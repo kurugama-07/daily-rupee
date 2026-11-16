@@ -19,6 +19,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { budgetStatus, expensesInMonth, expensesInRange, sumAmounts, weekRange } from "@/lib/expenses/calc";
 import { formatMoney } from "@/lib/expenses/format";
 import { useExpenses } from "@/lib/expenses/store";
+import { ThemeIconButton, ThemeSegmented } from "@/components/expenses/ThemeToggle";
 import { cn } from "@/lib/utils";
 
 type NavPath = "/" | "/add" | "/history" | "/daily" | "/weekly" | "/analytics" | "/budget" | "/settings";
@@ -105,6 +106,7 @@ function DesktopSidebar() {
           </Link>
         ))}
       </nav>
+      <ThemeSegmented inverted className="mb-3" />
       <MonthMini />
     </aside>
   );
@@ -114,6 +116,8 @@ function MobileTopBar() {
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b bg-background/85 px-4 backdrop-blur-md lg:hidden">
       <Brand />
+      <div className="flex items-center gap-1">
+      <ThemeIconButton />
       <Link
         to="/settings"
         aria-label="Settings"
@@ -121,6 +125,7 @@ function MobileTopBar() {
       >
         <Settings className="size-5" />
       </Link>
+      </div>
     </header>
   );
 }

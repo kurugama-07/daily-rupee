@@ -32,4 +32,5 @@ use the editor.
 ## Project rules
 
 - Monthly and weekly budgets share `budgetStatus` in `src/lib/expenses/calc.ts`; add new budget periods there, not in components — keeps warning thresholds identical everywhere.
-- Weeks run Monday to Sunday (`weekStartsOn: 1`) in every calculation — dashboard, weekly page and budgets must agree on "this week".
+- The week start lives only in `WEEK_STARTS_ON` in `src/lib/expenses/calc.ts`; every calculation uses it — dashboard, weekly page and budgets must agree on "this week".
+- Theme (light/dark/system) is applied by a pre-paint inline script in `__root.tsx` plus `src/lib/theme.ts`; keep the storage key in sync between them — avoids a light flash on load.
