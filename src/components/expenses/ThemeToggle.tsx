@@ -64,7 +64,7 @@ export function ThemeSegmented({ inverted, className }: { inverted?: boolean; cl
                   ? "bg-sidebar-primary text-sidebar-primary-foreground"
                   : "text-sidebar-foreground/70 hover:text-sidebar-accent-foreground"
                 : active
-                  ? "bg-card text-foreground shadow-card"
+                  ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground",
             )}
           >

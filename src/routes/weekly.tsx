@@ -100,7 +100,7 @@ function WeeklyPage() {
       <PageHeader
         eyebrow={isCurrent ? "This week" : rangeLabel(weekStart)}
         title="Weekly spending"
-        description="Sunday to Saturday. Set a limit and watch what's left count down."
+        description="Sunday to Saturday. Set a limit and watch it count down 📉"
         actions={
           <div className="flex items-center gap-1 rounded-xl border bg-card p-1">
             <Button variant="ghost" size="icon" aria-label="Previous week" onClick={() => setWeekStart(toDateKey(subWeeks(parseISO(weekStart), 1)))}>
@@ -122,7 +122,7 @@ function WeeklyPage() {
 
       <div className="grid gap-5 lg:grid-cols-5">
         <div className="space-y-5 lg:col-span-3">
-          <div className="relative overflow-hidden rounded-2xl hero-gradient p-5 text-hero-foreground shadow-float sm:p-6">
+          <div className="relative overflow-hidden rounded-2xl hero-gradient p-5 text-hero-foreground shadow-float sm:p-6 sm:-rotate-[0.6deg]">
             {s ? (
               <>
                 <p className="text-sm font-semibold text-hero-foreground/80">
@@ -208,7 +208,7 @@ function WeeklyPage() {
 
           {w.groups.length === 0 ? (
             <Card>
-              <EmptyState icon={ReceiptText} title="No expenses this week" description="Anything you add for these days will show up here." />
+              <EmptyState icon={ReceiptText} title="Nothing spent this week (yet) 🫶" description="Anything you add for these days will pop up here." />
             </Card>
           ) : (
             w.groups.map((g) => (

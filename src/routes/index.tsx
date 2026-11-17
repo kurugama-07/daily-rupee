@@ -55,9 +55,9 @@ export const Route = createFileRoute("/")({
 });
 
 function greeting(h: number) {
-  if (h < 12) return "Good morning";
-  if (h < 17) return "Good afternoon";
-  return "Good evening";
+  if (h < 12) return "Morning, bestie ☀️";
+  if (h < 17) return "Afternoon check-in ✌️";
+  return "Evening vibe check 🌙";
 }
 
 function DashboardPage() {
@@ -112,7 +112,7 @@ function DashboardPage() {
       <PageHeader
         eyebrow={formatDateWithWeekday(s.todayKey)}
         title={greeting(s.today.getHours())}
-        description="Here's how your spending is looking."
+        description="Here's the tea on your spending ☕"
         actions={
           <Button asChild size="lg" className="hidden sm:inline-flex">
             <Link to="/add">
@@ -257,7 +257,7 @@ function DashboardPage() {
               <CategoryBreakdownList items={s.breakdown} limit={4} />
             </div>
           ) : (
-            <EmptyState icon={Wallet} title="No spending yet this month" />
+            <EmptyState icon={Wallet} title="Zero spent this month. Iconic ✨" />
           )}
         </Card>
       </div>
@@ -278,7 +278,7 @@ function DashboardPage() {
         ) : (
           <EmptyState
             icon={ReceiptText}
-            title="No expenses recorded yet"
+            title="No expenses yet 👀"
             description="Add your first expense and your dashboard will fill in automatically."
             action={
               <Button asChild>

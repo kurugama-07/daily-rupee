@@ -34,3 +34,5 @@ use the editor.
 - Monthly and weekly budgets share `budgetStatus` in `src/lib/expenses/calc.ts`; add new budget periods there, not in components — keeps warning thresholds identical everywhere.
 - The week start lives only in `WEEK_STARTS_ON` in `src/lib/expenses/calc.ts`; every calculation uses it — dashboard, weekly page and budgets must agree on "this week".
 - Theme (light/dark/system) is applied by a pre-paint inline script in `__root.tsx` plus `src/lib/theme.ts`; keep the storage key in sync between them — avoids a light flash on load.
+- Load the Netlify Vite plugin in `vite.config.ts` only behind the `NETLIFY` env check via dynamic import; importing it eagerly crashes the Lovable dev server.
+- Brutalist sticker look comes from the `--outline`/`--elev-*` tokens in `src/styles.css` and the `border-2 border-outline` base in Card/Button; restyle there, not per page.

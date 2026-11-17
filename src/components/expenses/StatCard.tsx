@@ -22,8 +22,8 @@ export function StatCard({
   return (
     <div
       className={cn(
-        "relative overflow-hidden rounded-2xl border p-4 sm:p-5",
-        primary ? "hero-gradient border-transparent text-hero-foreground shadow-float" : "bg-card shadow-card",
+        "relative overflow-hidden rounded-2xl p-4 transition-transform hover:-translate-y-0.5 sm:p-5",
+        primary ? "hero-gradient text-hero-foreground shadow-float" : "border-2 border-outline bg-card shadow-card",
         className,
       )}
     >
@@ -35,14 +35,14 @@ export function StatCard({
           <span
             className={cn(
               "inline-flex size-8 items-center justify-center rounded-lg [&_svg]:size-4",
-              primary ? "bg-hero-foreground/15 text-hero-foreground" : "bg-primary-soft text-primary",
+              primary ? "border-2 border-outline bg-card text-foreground" : "border-2 border-outline bg-lime text-lime-foreground",
             )}
           >
             <Icon />
           </span>
         )}
       </div>
-      <p className="mt-3 truncate text-xl font-bold tabular-nums tracking-tight sm:text-2xl">{value}</p>
+      <p className="mt-3 truncate font-display text-xl font-extrabold tabular-nums tracking-tight sm:text-2xl">{value}</p>
       {hint && (
         <div className={cn("mt-1 text-xs", primary ? "text-hero-foreground/75" : "text-muted-foreground")}>
           {hint}

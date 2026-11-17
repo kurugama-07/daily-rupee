@@ -4,7 +4,6 @@ import {
   CalendarDays,
   CalendarRange,
   LayoutDashboard,
-  Leaf,
   MoreHorizontal,
   Plus,
   ReceiptText,
@@ -39,17 +38,18 @@ function Brand({ inverted }: { inverted?: boolean }) {
   return (
     <Link to="/" className="flex items-center gap-2.5">
       <span
+        aria-hidden
         className={cn(
-          "inline-flex size-9 items-center justify-center rounded-xl [&_svg]:size-5",
-          inverted ? "bg-sidebar-primary text-sidebar-primary-foreground" : "bg-primary text-primary-foreground",
+          "inline-flex size-9 -rotate-6 items-center justify-center rounded-xl border-2 bg-lime font-display text-sm font-extrabold text-lime-foreground transition-transform hover:rotate-6",
+          inverted ? "border-sidebar-primary shadow-[3px_3px_0_0_var(--bubblegum)]" : "border-outline shadow-pop",
         )}
       >
-        <Leaf />
+        Rs
       </span>
       <span className="leading-tight">
-        <span className="block font-display text-xl font-medium">RupeeFlow</span>
+        <span className="block font-display text-xl font-extrabold tracking-tight">Rupee<span className="text-bubblegum">Flow</span></span>
         <span className={cn("block text-[11px]", inverted ? "text-sidebar-foreground/60" : "text-muted-foreground")}>
-          Personal expenses
+          track it. own it.
         </span>
       </span>
     </Link>
@@ -68,7 +68,7 @@ function MonthMini() {
   return (
     <div className="rounded-2xl bg-sidebar-accent p-4">
       <p className="text-xs text-sidebar-foreground/65">Spent this month</p>
-      <p className="mt-1 text-lg font-bold tabular-nums text-sidebar-accent-foreground">{formatMoney(total, settings.currency)}</p>
+      <p className="mt-1 font-display text-xl font-extrabold tabular-nums text-sidebar-accent-foreground">{formatMoney(total, settings.currency)}</p>
       {week && (
         <p className="mt-1 text-xs text-sidebar-foreground/65">
           {week.remaining >= 0
@@ -78,7 +78,7 @@ function MonthMini() {
       )}
       <Link
         to="/add"
-        className="mt-3 flex h-10 items-center justify-center gap-2 rounded-xl bg-sidebar-primary text-sm font-semibold text-sidebar-primary-foreground transition hover:opacity-90"
+        className="mt-3 flex h-10 items-center justify-center gap-2 rounded-xl border-2 border-sidebar-primary bg-sidebar-primary text-sm font-bold text-sidebar-primary-foreground shadow-[3px_3px_0_0_var(--bubblegum)] transition hover:-translate-y-0.5"
       >
         <Plus className="size-4" /> Add expense
       </Link>
@@ -99,7 +99,7 @@ function DesktopSidebar() {
             to={item.to}
             activeOptions={{ exact: true }}
             className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-sidebar-foreground/70 transition hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-            activeProps={{ className: "bg-sidebar-accent !text-sidebar-accent-foreground" }}
+            activeProps={{ className: "!bg-sidebar-primary !text-sidebar-primary-foreground font-bold" }}
           >
             <item.icon className="size-[18px]" />
             {item.label}
@@ -114,7 +114,7 @@ function DesktopSidebar() {
 
 function MobileTopBar() {
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b bg-background/85 px-4 backdrop-blur-md lg:hidden">
+    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b-2 border-outline bg-background/90 px-4 backdrop-blur-md lg:hidden">
       <Brand />
       <div className="flex items-center gap-1">
       <ThemeIconButton />
@@ -144,7 +144,7 @@ function MobileBottomNav() {
       to={item.to}
       activeOptions={{ exact: true }}
       className={bottomItem}
-      activeProps={{ className: "!text-primary" }}
+      activeProps={{ className: "!text-foreground [&_svg]:rounded-md [&_svg]:bg-lime [&_svg]:text-lime-foreground" }}
     >
       <item.icon className="size-5" />
       {item.label === "Expense History" ? "History" : item.label === "Daily Breakdown" ? "Daily" : item.label === "Dashboard" ? "Home" : item.label}
@@ -152,15 +152,15 @@ function MobileBottomNav() {
   );
   return (
     <>
-      <nav className="safe-bottom fixed inset-x-0 bottom-0 z-40 border-t bg-card/95 backdrop-blur-md lg:hidden">
+      <nav className="safe-bottom fixed inset-x-0 bottom-0 z-40 border-t-2 border-outline bg-card/95 backdrop-blur-md lg:hidden">
         <div className="mx-auto grid max-w-lg grid-cols-5 items-end px-2">
           {left.map(navLink)}
           <div className="flex justify-center">
             <Link
               to="/add"
               aria-label="Add expense"
-              className="-mt-6 mb-1 inline-flex size-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-float transition active:scale-95"
-              activeProps={{ className: "ring-4 ring-primary-soft" }}
+              className="-mt-6 mb-1 inline-flex size-14 -rotate-3 items-center justify-center rounded-2xl border-2 border-outline bg-lime text-lime-foreground shadow-pop transition active:translate-y-0.5 active:shadow-none"
+              activeProps={{ className: "rotate-3 bg-bubblegum" }}
             >
               <Plus className="size-6" strokeWidth={2.5} />
             </Link>
@@ -183,10 +183,10 @@ function MobileBottomNav() {
                 key={item.to}
                 to={item.to}
                 onClick={() => setMoreOpen(false)}
-                className="flex flex-col items-center gap-2 rounded-2xl border bg-card p-4 text-xs font-semibold text-foreground"
-                activeProps={{ className: "border-primary bg-primary-soft" }}
+                className="flex flex-col items-center gap-2 rounded-2xl border-2 border-outline bg-card p-4 text-xs font-bold text-foreground shadow-pop"
+                activeProps={{ className: "bg-lime text-lime-foreground" }}
               >
-                <span className="inline-flex size-10 items-center justify-center rounded-xl bg-primary-soft text-primary">
+                <span className="inline-flex size-10 items-center justify-center rounded-xl border-2 border-outline bg-sun text-lime-foreground">
                   <item.icon className="size-5" />
                 </span>
                 {item.label}

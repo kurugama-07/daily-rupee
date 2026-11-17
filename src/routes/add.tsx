@@ -26,12 +26,12 @@ function AddExpensePage() {
   const todayList = useMemo(() => expensesOnDate(expenses, toDateKey(new Date())), [expenses]);
   return (
     <>
-      <PageHeader eyebrow="New entry" title="Add expense" description="Name, amount, category — that's all you need." />
+      <PageHeader eyebrow="New entry" title="Add expense" description="Name it, price it, done ⚡" />
       <div className="grid gap-5 lg:grid-cols-5">
-        <Card className="p-5 sm:p-7 lg:col-span-3">
+        <Card className="min-w-0 p-5 sm:p-7 lg:col-span-3">
           <ExpenseForm autoFocus />
         </Card>
-        <Card className="h-fit p-5 lg:col-span-2">
+        <Card className="h-fit min-w-0 p-5 lg:col-span-2">
           <SectionTitle
             title="Today so far"
             description={`${todayList.length} expense${todayList.length === 1 ? "" : "s"} · ${formatMoney(sumAmounts(todayList), settings.currency)}`}

@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 export function EmptyState({ icon: Icon, title, description, action }: { icon: LucideIcon; title: string; description?: string; action?: ReactNode }) {
   return (
     <div className="flex flex-col items-center justify-center px-6 py-12 text-center">
-      <span className="mb-4 inline-flex size-12 items-center justify-center rounded-2xl bg-primary-soft text-primary [&_svg]:size-5">
+      <span className="mb-4 inline-flex size-12 rotate-[-6deg] items-center justify-center rounded-2xl border-2 border-outline bg-bubblegum text-lime-foreground shadow-pop [&_svg]:size-5">
         <Icon />
       </span>
       <p className="font-semibold text-foreground">{title}</p>

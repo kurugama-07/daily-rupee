@@ -7,11 +7,11 @@ import { cn } from "@/lib/utils";
 export function BudgetBar({ status, className }: { status: BudgetStatus; className?: string }) {
   const pct = Math.min(status.percent, 100);
   return (
-    <div className={cn("h-3 w-full overflow-hidden rounded-full bg-muted", className)}>
+    <div className={cn("h-4 w-full overflow-hidden rounded-full border-2 border-outline bg-muted", className)}>
       <div
         className={cn(
-          "h-full rounded-full transition-all duration-700",
-          status.level === "exceeded" ? "bg-destructive" : status.level === "warning" ? "bg-warning" : "bg-primary",
+          "h-full rounded-full border-r-2 border-outline transition-all duration-700",
+          status.level === "exceeded" ? "bg-destructive" : status.level === "warning" ? "bg-warning" : "bg-lime",
         )}
         style={{ width: `${pct}%` }}
       />
@@ -37,20 +37,33 @@ export function BudgetAlert({
     <div
       role="alert"
       className={cn(
-        "flex items-start gap-3 rounded-xl p-3.5 text-sm",
+        "flex items-start gap-3 rounded-xl border-2 border-outline p-3.5 text-sm shadow-pop",
         exceeded ? "bg-destructive-soft text-destructive" : "bg-warning-soft text-warning-foreground",
       )}
     >
       {exceeded ? <CircleAlert className="mt-0.5 size-4 shrink-0" /> : <AlertTriangle className="mt-0.5 size-4 shrink-0" />}
       <div>
-        <p className="font-semibold">{exceeded ? `${period === "week" ? "Weekly" : "Monthly"} budget exceeded` : `You've used over 80% of your ${adj} budget`}</p>
+        <p className="font-semibold">{exceeded ? `${period === "week" ? "Weekly" : "Monthly"} budget? Cooked 💀` : `Lowkey close to your ${adj} limit 👀`}</p>
         <p className="mt-0.5 opacity-90">
           {exceeded
-            ? `You're ${formatMoney(Math.abs(status.remaining), currency)} over your ${adj} limit.`
-            : `Only ${formatMoney(status.remaining, currency)} left for this ${period} — spend carefully.`}
+            ? `You're ${formatMoney(Math.abs(status.remaining), currency)} over your ${adj} limit. Time for a no-spend day.`
+            : `You've used over 80%. Only ${formatMoney(status.remaining, currency)} left this ${period}, so go easy.`}
         </p>
       </div>
     </div>
+  );
+}
+
+/** Little sticker that sums up how the budget is going. */
+export function BudgetVibe({ status }: { status: BudgetStatus }) {
+  const vibe =
+    status.level === "exceeded"
+      ? { label: "Over it 💀", cls: "bg-destructive text-destructive-foreground" }
+      : status.level === "warning"
+        ? { label: "Careful 👀", cls: "bg-sun text-lime-foreground" }
+        : { label: "Chillin' 😎", cls: "bg-lime text-lime-foreground" };
+  return (
+    <span className={cn("rounded-full border-[1.5px] border-outline px-1.5 py-px text-[10px] font-extrabold", vibe.cls)}>{vibe.label}</span>
   );
 }
 
@@ -59,7 +72,10 @@ export function BudgetSummary({ status, currency }: { status: BudgetStatus; curr
     <div className="space-y-3">
       <div className="flex items-end justify-between gap-2">
         <div>
-          <p className="text-xs text-muted-foreground">Spent of {formatMoney(status.budget, currency)}</p>
+          <p className="flex items-center gap-2 text-xs text-muted-foreground">
+            Spent of {formatMoney(status.budget, currency)}
+            <BudgetVibe status={status} />
+          </p>
           <p className="text-lg font-bold tabular-nums">{formatMoney(status.spent, currency)}</p>
         </div>
         <p
