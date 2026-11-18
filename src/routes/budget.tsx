@@ -70,7 +70,7 @@ function BudgetPage() {
                     <p className="text-sm text-muted-foreground">Used</p>
                     <p
                       className={cn(
-                        "font-display text-5xl font-medium tabular-nums",
+                        "font-display text-4xl font-semibold tracking-tight tabular-nums sm:text-5xl",
                         s.level === "exceeded" ? "text-destructive" : s.level === "warning" ? "text-warning-foreground" : "text-primary",
                       )}
                     >

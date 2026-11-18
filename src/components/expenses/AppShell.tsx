@@ -40,16 +40,16 @@ function Brand({ inverted }: { inverted?: boolean }) {
       <span
         aria-hidden
         className={cn(
-          "inline-flex size-9 -rotate-6 items-center justify-center rounded-xl border-2 bg-lime font-display text-sm font-extrabold text-lime-foreground transition-transform hover:rotate-6",
-          inverted ? "border-sidebar-primary shadow-[3px_3px_0_0_var(--bubblegum)]" : "border-outline shadow-pop",
+          "inline-flex size-9 items-center justify-center rounded-xl font-display text-sm font-bold",
+          inverted ? "bg-sidebar-primary text-sidebar-primary-foreground" : "bg-primary text-primary-foreground",
         )}
       >
         Rs
       </span>
       <span className="leading-tight">
-        <span className="block font-display text-xl font-extrabold tracking-tight">Rupee<span className="text-bubblegum">Flow</span></span>
+        <span className="block font-display text-xl font-bold tracking-tight">Rupee<span className={inverted ? "text-sidebar-primary" : "text-primary"}>Flow</span></span>
         <span className={cn("block text-[11px]", inverted ? "text-sidebar-foreground/60" : "text-muted-foreground")}>
-          track it. own it.
+          Personal spending tracker
         </span>
       </span>
     </Link>
@@ -68,7 +68,7 @@ function MonthMini() {
   return (
     <div className="rounded-2xl bg-sidebar-accent p-4">
       <p className="text-xs text-sidebar-foreground/65">Spent this month</p>
-      <p className="mt-1 font-display text-xl font-extrabold tabular-nums text-sidebar-accent-foreground">{formatMoney(total, settings.currency)}</p>
+      <p className="mt-1 font-display text-xl font-bold tabular-nums text-sidebar-accent-foreground">{formatMoney(total, settings.currency)}</p>
       {week && (
         <p className="mt-1 text-xs text-sidebar-foreground/65">
           {week.remaining >= 0
@@ -78,7 +78,7 @@ function MonthMini() {
       )}
       <Link
         to="/add"
-        className="mt-3 flex h-10 items-center justify-center gap-2 rounded-xl border-2 border-sidebar-primary bg-sidebar-primary text-sm font-bold text-sidebar-primary-foreground shadow-[3px_3px_0_0_var(--bubblegum)] transition hover:-translate-y-0.5"
+        className="mt-3 flex h-10 items-center justify-center gap-2 rounded-xl bg-sidebar-primary text-sm font-semibold text-sidebar-primary-foreground transition hover:opacity-90"
       >
         <Plus className="size-4" /> Add expense
       </Link>
@@ -99,7 +99,7 @@ function DesktopSidebar() {
             to={item.to}
             activeOptions={{ exact: true }}
             className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-sidebar-foreground/70 transition hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-            activeProps={{ className: "!bg-sidebar-primary !text-sidebar-primary-foreground font-bold" }}
+            activeProps={{ className: "!bg-sidebar-primary !text-sidebar-primary-foreground font-semibold" }}
           >
             <item.icon className="size-[18px]" />
             {item.label}
@@ -144,7 +144,7 @@ function MobileBottomNav() {
       to={item.to}
       activeOptions={{ exact: true }}
       className={bottomItem}
-      activeProps={{ className: "!text-foreground [&_svg]:rounded-md [&_svg]:bg-lime [&_svg]:text-lime-foreground" }}
+      activeProps={{ className: "!text-primary" }}
     >
       <item.icon className="size-5" />
       {item.label === "Expense History" ? "History" : item.label === "Daily Breakdown" ? "Daily" : item.label === "Dashboard" ? "Home" : item.label}
@@ -159,8 +159,7 @@ function MobileBottomNav() {
             <Link
               to="/add"
               aria-label="Add expense"
-              className="-mt-6 mb-1 inline-flex size-14 -rotate-3 items-center justify-center rounded-2xl border-2 border-outline bg-lime text-lime-foreground shadow-pop transition active:translate-y-0.5 active:shadow-none"
-              activeProps={{ className: "rotate-3 bg-bubblegum" }}
+              className="-mt-6 mb-1 inline-flex size-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-float ring-4 ring-background transition active:scale-95"
             >
               <Plus className="size-6" strokeWidth={2.5} />
             </Link>
@@ -175,7 +174,7 @@ function MobileBottomNav() {
       <Sheet open={moreOpen} onOpenChange={setMoreOpen}>
         <SheetContent side="bottom" className="rounded-t-3xl pb-8">
           <SheetHeader>
-            <SheetTitle className="font-display text-xl font-medium">More</SheetTitle>
+            <SheetTitle className="font-display text-xl font-semibold">More</SheetTitle>
           </SheetHeader>
           <div className="mt-2 grid grid-cols-2 gap-3 px-4">
             {more.map((item) => (
@@ -183,10 +182,10 @@ function MobileBottomNav() {
                 key={item.to}
                 to={item.to}
                 onClick={() => setMoreOpen(false)}
-                className="flex flex-col items-center gap-2 rounded-2xl border-2 border-outline bg-card p-4 text-xs font-bold text-foreground shadow-pop"
-                activeProps={{ className: "bg-lime text-lime-foreground" }}
+                className="flex flex-col items-center gap-2 rounded-2xl border border-outline bg-card p-4 text-xs font-semibold text-foreground shadow-pop"
+                activeProps={{ className: "border-primary bg-primary-soft" }}
               >
-                <span className="inline-flex size-10 items-center justify-center rounded-xl border-2 border-outline bg-sun text-lime-foreground">
+                <span className="inline-flex size-10 items-center justify-center rounded-xl bg-primary-soft text-primary">
                   <item.icon className="size-5" />
                 </span>
                 {item.label}

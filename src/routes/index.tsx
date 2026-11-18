@@ -55,9 +55,9 @@ export const Route = createFileRoute("/")({
 });
 
 function greeting(h: number) {
-  if (h < 12) return "Morning, bestie ☀️";
-  if (h < 17) return "Afternoon check-in ✌️";
-  return "Evening vibe check 🌙";
+  if (h < 12) return "Good morning";
+  if (h < 17) return "Good afternoon";
+  return "Good evening";
 }
 
 function DashboardPage() {
@@ -112,7 +112,7 @@ function DashboardPage() {
       <PageHeader
         eyebrow={formatDateWithWeekday(s.todayKey)}
         title={greeting(s.today.getHours())}
-        description="Here's the tea on your spending ☕"
+        description="Here's how your spending is tracking."
         actions={
           <Button asChild size="lg" className="hidden sm:inline-flex">
             <Link to="/add">
@@ -247,7 +247,7 @@ function DashboardPage() {
             }
           />
           {s.breakdown.length ? (
-            <div className="grid items-center gap-5 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+            <div className="grid items-center gap-5 sm:grid-cols-2 lg:grid-cols-1 2xl:grid-cols-2">
               <CategoryDonut
                 total={s.monthTotal}
                 currency={cur}
@@ -257,7 +257,7 @@ function DashboardPage() {
               <CategoryBreakdownList items={s.breakdown} limit={4} />
             </div>
           ) : (
-            <EmptyState icon={Wallet} title="Zero spent this month. Iconic ✨" />
+            <EmptyState icon={Wallet} title="Nothing spent this month yet" />
           )}
         </Card>
       </div>
@@ -278,7 +278,7 @@ function DashboardPage() {
         ) : (
           <EmptyState
             icon={ReceiptText}
-            title="No expenses yet 👀"
+            title="No expenses yet"
             description="Add your first expense and your dashboard will fill in automatically."
             action={
               <Button asChild>

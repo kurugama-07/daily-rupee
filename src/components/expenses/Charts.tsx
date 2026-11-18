@@ -36,7 +36,7 @@ function ChartTip({ active, payload, label, currency, labelFormat }: TipProps) {
   const rows = payload.filter((p) => p.value !== null && p.value !== undefined);
   if (!rows.length) return null;
   return (
-    <div className="min-w-36 rounded-xl border-2 border-outline bg-popover px-3 py-2 text-xs shadow-pop">
+    <div className="min-w-36 rounded-xl border border-outline bg-popover px-3 py-2 text-xs shadow-card">
       {label !== undefined && label !== "" && (
         <p className="mb-1.5 font-semibold text-popover-foreground">{labelFormat ? labelFormat(label) : label}</p>
       )}
@@ -130,7 +130,7 @@ export function DailyBarChart({
         <XAxis dataKey="label" tick={axisTick} tickLine={false} axisLine={false} interval="preserveStartEnd" minTickGap={10} />
         <YAxis tick={axisTick} tickLine={false} axisLine={false} tickFormatter={(v: number) => formatCompact(v)} width={48} />
         <Tooltip content={<ChartTip currency={currency} labelFormat={labelFormat} />} cursor={{ fill: "var(--muted)" }} />
-        <Bar dataKey="total" name="Spent" radius={[6, 6, 2, 2]} maxBarSize={28} stroke="var(--outline)" strokeWidth={1.5}>
+        <Bar dataKey="total" name="Spent" radius={[6, 6, 2, 2]} maxBarSize={28}>
           {data.map((d) => (
             <Cell key={d.date} fill={d.date === highlight ? "var(--chart-1)" : "var(--chart-2)"} />
           ))}
@@ -163,7 +163,7 @@ export function CategoryDonut({
             innerRadius="66%"
             outerRadius="94%"
             paddingAngle={2}
-            stroke="var(--outline)"
+            stroke="var(--card)"
             strokeWidth={1.5}
             cornerRadius={4}
           >
@@ -175,7 +175,7 @@ export function CategoryDonut({
       </ResponsiveContainer>
       <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
         <span className="text-[11px] font-medium text-muted-foreground">Total</span>
-        <span className="font-display text-base font-extrabold tabular-nums text-foreground">{formatMoney(total, currency)}</span>
+        <span className="font-display text-base font-semibold tabular-nums text-foreground">{formatMoney(total, currency)}</span>
       </div>
     </div>
   );
@@ -199,7 +199,7 @@ export function MonthlyBarChart({
         <XAxis dataKey="label" tick={axisTick} tickLine={false} axisLine={false} interval={0} minTickGap={0} fontSize={10} />
         <YAxis tick={axisTick} tickLine={false} axisLine={false} tickFormatter={(v: number) => formatCompact(v)} width={48} />
         <Tooltip content={<ChartTip currency={currency} />} cursor={{ fill: "var(--muted)" }} />
-        <Bar dataKey="total" name="Spent" radius={[6, 6, 2, 2]} maxBarSize={36} stroke="var(--outline)" strokeWidth={1.5}>
+        <Bar dataKey="total" name="Spent" radius={[6, 6, 2, 2]} maxBarSize={36}>
           {data.map((d) => (
             <Cell key={d.key} fill={d.key === activeKey ? "var(--chart-1)" : "var(--chart-6)"} />
           ))}

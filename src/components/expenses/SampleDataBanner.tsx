@@ -51,7 +51,7 @@ export function SampleDataBanner() {
   const { hasSampleData } = useExpenses();
   if (!hasSampleData) return null;
   return (
-    <div className="mb-6 flex flex-col gap-3 rounded-2xl border-2 border-outline bg-warning-soft p-4 shadow-pop sm:flex-row sm:items-center sm:justify-between">
+    <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-warning/40 bg-warning-soft p-4 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-start gap-3">
         <FlaskConical className="mt-0.5 size-5 shrink-0 text-warning-foreground" />
         <div className="text-sm text-warning-foreground">

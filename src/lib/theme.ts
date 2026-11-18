@@ -3,7 +3,7 @@ export type ThemePref = "light" | "dark" | "system";
 /** Must match the key read by the pre-paint script in src/routes/__root.tsx. */
 export const THEME_STORAGE_KEY = "sage-theme";
 
-const META_COLORS = { light: "#faf5e6", dark: "#16141d" } as const;
+const META_COLORS = { light: "#f5f8f6", dark: "#121816" } as const;
 
 /** Inline script that applies the saved theme before first paint (no light flash). */
 export const THEME_INIT_SCRIPT = `(function(){try{var p=localStorage.getItem("${THEME_STORAGE_KEY}")||"system";var d=p==="dark"||(p==="system"&&window.matchMedia("(prefers-color-scheme: dark)").matches);var r=document.documentElement;r.classList.toggle("dark",d);r.style.colorScheme=d?"dark":"light";}catch(e){}})();`;

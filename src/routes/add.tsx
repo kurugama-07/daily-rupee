@@ -26,7 +26,7 @@ function AddExpensePage() {
   const todayList = useMemo(() => expensesOnDate(expenses, toDateKey(new Date())), [expenses]);
   return (
     <>
-      <PageHeader eyebrow="New entry" title="Add expense" description="Name it, price it, done ⚡" />
+      <PageHeader eyebrow="New entry" title="Add expense" description="Name, amount, category — saved in seconds." />
       <div className="grid gap-5 lg:grid-cols-5">
         <Card className="min-w-0 p-5 sm:p-7 lg:col-span-3">
           <ExpenseForm autoFocus />

@@ -35,13 +35,13 @@ export function CategoryIcon({
     <span
       aria-hidden
       className={cn(
-        "inline-flex shrink-0 items-center justify-center rounded-xl border-[1.5px] border-outline leading-none",
+        "inline-flex shrink-0 items-center justify-center rounded-xl leading-none",
         size === "sm" && "size-7 text-sm",
         size === "md" && "size-10 text-lg",
         size === "lg" && "size-12 text-xl",
         className,
       )}
-      style={{ backgroundColor: `color-mix(in oklab, ${category.color} 40%, var(--card))` }}
+      style={{ backgroundColor: `color-mix(in oklab, ${category.color} 22%, var(--card))` }}
     >
       {categoryEmoji(category.id)}
     </span>
