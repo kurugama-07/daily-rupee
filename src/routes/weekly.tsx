@@ -4,24 +4,26 @@ import { ArrowDownRight, ArrowUpRight, CalendarClock, ChevronLeft, ChevronRight,
 import { useMemo, useState } from "react";
 
 import { BudgetAlert } from "@/components/expenses/Budget";
-import { BudgetSettingsForm } from "@/components/expenses/BudgetSettingsForm";
 import { DailyBarChart, MonthlyBarChart } from "@/components/expenses/Charts";
 import { EmptyState } from "@/components/expenses/EmptyState";
 import { ExpenseList } from "@/components/expenses/ExpenseItem";
 import { PageHeader, SectionTitle } from "@/components/expenses/PageHeader";
 import { StatCard } from "@/components/expenses/StatCard";
+import { WeeklyLimitSettings } from "@/components/expenses/Wallet";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
-  budgetStatus,
   daysLeftInWeek,
   expensesInRange,
   groupByDate,
+  incomesInRange,
   percentChange,
   round2,
   sumAmounts,
   toDateKey,
+  walletWeek,
   weekDailyTotals,
+  weeklyBudgetStatus,
   weekStartKey,
   weeklyHistory,
 } from "@/lib/expenses/calc";
@@ -50,7 +52,7 @@ const rangeLabel = (start: string) => {
 };
 
 function WeeklyPage() {
-  const { expenses, settings } = useExpenses();
+  const { expenses, incomes, settings } = useExpenses();
   const cur = settings.currency;
   const today = new Date();
   const todayKey = toDateKey(today);
@@ -77,9 +79,11 @@ function WeeklyPage() {
       days,
       elapsed,
       groups: groupByDate(list),
-      status: settings.weeklyBudgetEnabled ? budgetStatus(total, settings.weeklyBudget) : null,
+      status: weeklyBudgetStatus(expenses, incomes, settings, weekStart),
+      wallet: walletWeek(expenses, incomes, weekStart, settings.walletCarryOver),
+      weekIncomes: incomesInRange(incomes, weekStart, end),
     };
-  }, [expenses, weekStart, currentWeek, settings.weeklyBudget, settings.weeklyBudgetEnabled]);
+  }, [expenses, incomes, weekStart, currentWeek, settings]);
 
   const history = useMemo(() => weeklyHistory(expenses, new Date(), 8), [expenses]);
 
@@ -88,10 +92,13 @@ function WeeklyPage() {
   const perDay = s && isCurrent && s.remaining > 0 ? Math.floor(s.remaining / daysLeft) : 0;
   const up = (w.change ?? 0) > 0;
 
+  const fromWallet = settings.weeklyBudgetSource === "wallet";
   // Running balance: how much of the weekly limit is left after each day.
-  let running = s?.budget ?? 0;
+  // Wallet: starts with any carry-over and grows on the days money is received.
+  let running = fromWallet ? w.wallet.carryIn : (s?.budget ?? 0);
   const dayRows = w.days.map((d, i) => {
-    running = round2(running - d.total);
+    const inToday = fromWallet ? w.weekIncomes.filter((x) => x.date === d.date).reduce((t, x) => t + x.amount, 0) : 0;
+    running = round2(running + inToday - d.total);
     return { ...d, left: running, future: i >= w.elapsed };
   });
 
@@ -131,6 +138,7 @@ function WeeklyPage() {
                 <p className="mt-1 font-display text-4xl font-semibold tracking-tight tabular-nums sm:text-5xl">{formatMoney(Math.abs(s.remaining), cur)}</p>
                 <p className="mt-1 text-sm text-hero-foreground/80">
                   Spent {formatMoney(s.spent, cur)} of {formatMoney(s.budget, cur)}
+                  {fromWallet && " in your wallet"}
                 </p>
                 <div className="mt-5 h-3 w-full overflow-hidden rounded-full bg-hero-foreground/20">
                   <div
@@ -227,8 +235,8 @@ function WeeklyPage() {
 
         <div className="space-y-5 lg:col-span-2">
           <Card className="p-5 sm:p-6">
-            <SectionTitle title="Weekly limit" />
-            <BudgetSettingsForm period="week" />
+            <SectionTitle title="Weekly limit" description="Choose where your weekly limit comes from" />
+            <WeeklyLimitSettings />
           </Card>
 
           <Card className="p-5 sm:p-6">
@@ -241,7 +249,8 @@ function WeeklyPage() {
             />
             <div className="mt-3 divide-y">
               {[...history].reverse().map((h) => {
-                const over = s && h.total > s.budget;
+                const hs = weeklyBudgetStatus(expenses, incomes, settings, h.start);
+                const over = hs && hs.remaining < 0;
                 return (
                   <button
                     key={h.start}
@@ -258,9 +267,9 @@ function WeeklyPage() {
                     </span>
                     <span className="text-right">
                       <span className="font-bold tabular-nums">{formatMoney(h.total, cur)}</span>
-                      {s && (
+                      {hs && (
                         <span className={cn("block text-xs", over ? "text-destructive" : "text-primary")}>
-                          {over ? `${formatMoney(h.total - s.budget, cur)} over` : `${formatMoney(s.budget - h.total, cur)} under`}
+                          {over ? `${formatMoney(-hs.remaining, cur)} over` : `${formatMoney(hs.remaining, cur)} under`}
                         </span>
                       )}
                     </span>

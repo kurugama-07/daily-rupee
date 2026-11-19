@@ -178,7 +178,7 @@ function SettingsPage() {
                     <AlertDialogHeader>
                       <AlertDialogTitle>Delete all {expenses.length} expenses?</AlertDialogTitle>
                       <AlertDialogDescription>
-                        This can't be undone. Your categories and settings will be kept. Consider exporting a CSV first.
+                        This can't be undone. Your wallet, categories and settings will be kept. Consider exporting a CSV first.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>

@@ -1,5 +1,5 @@
 import { DEFAULT_SETTINGS } from "./constants";
-import type { AppData, Category, Expense } from "./types";
+import type { AppData, Category, Expense, Income } from "./types";
 
 /**
  * Persistence boundary. The UI only talks to this interface, so swapping
@@ -21,12 +21,19 @@ function normalize(raw: unknown): AppData | null {
     (e): e is Expense =>
       !!e && typeof e.id === "string" && typeof e.amount === "number" && typeof e.date === "string",
   );
+  const incomes = Array.isArray(obj.incomes)
+    ? obj.incomes.filter(
+        (e): e is Income =>
+          !!e && typeof e.id === "string" && typeof e.amount === "number" && typeof e.date === "string",
+      )
+    : [];
   const customCategories = Array.isArray(obj.customCategories)
     ? obj.customCategories.filter((c): c is Category => !!c && typeof c.id === "string")
     : [];
   return {
     version: 1,
     expenses,
+    incomes,
     customCategories,
     settings: { ...DEFAULT_SETTINGS, ...(obj.settings ?? {}) },
   };

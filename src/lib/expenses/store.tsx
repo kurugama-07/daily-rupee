@@ -11,12 +11,13 @@ import {
 import { CHART_PALETTE, DEFAULT_CATEGORIES, DEFAULT_SETTINGS } from "./constants";
 import { createInitialData } from "./sample-data";
 import { localExpenseRepository, type ExpenseRepository } from "./storage";
-import type { AppData, Category, Expense, ExpenseInput, Settings } from "./types";
+import type { AppData, Category, Expense, ExpenseInput, Income, IncomeInput, Settings } from "./types";
 import { validateCategoryName } from "./validation";
 
 interface ExpenseStore {
   hydrated: boolean;
   expenses: Expense[];
+  incomes: Income[];
   categories: Category[];
   customCategories: Category[];
   settings: Settings;
@@ -25,6 +26,9 @@ interface ExpenseStore {
   addExpense: (input: ExpenseInput) => Expense;
   updateExpense: (id: string, input: ExpenseInput) => void;
   deleteExpense: (id: string) => void;
+  addIncome: (input: IncomeInput) => Income;
+  updateIncome: (id: string, input: IncomeInput) => void;
+  deleteIncome: (id: string) => void;
   removeSampleData: () => void;
   clearAllExpenses: () => void;
   addCategory: (name: string) => { ok: true; category: Category } | { ok: false; error: string };
@@ -34,7 +38,7 @@ interface ExpenseStore {
 
 const StoreContext = createContext<ExpenseStore | null>(null);
 
-const EMPTY: AppData = { version: 1, expenses: [], customCategories: [], settings: DEFAULT_SETTINGS };
+const EMPTY: AppData = { version: 1, expenses: [], incomes: [], customCategories: [], settings: DEFAULT_SETTINGS };
 
 function newId() {
   return typeof crypto !== "undefined" && "randomUUID" in crypto
@@ -93,8 +97,30 @@ export function ExpenseProvider({
     setData((d) => ({ ...d, expenses: d.expenses.filter((e) => e.id !== id) }));
   }, []);
 
+  const addIncome = useCallback((input: IncomeInput) => {
+    const now = new Date().toISOString();
+    const income: Income = { ...input, id: newId(), createdAt: now, updatedAt: now };
+    setData((d) => ({ ...d, incomes: [income, ...d.incomes] }));
+    return income;
+  }, []);
+
+  const updateIncome = useCallback((id: string, input: IncomeInput) => {
+    setData((d) => ({
+      ...d,
+      incomes: d.incomes.map((e) => (e.id === id ? { ...e, ...input, updatedAt: new Date().toISOString() } : e)),
+    }));
+  }, []);
+
+  const deleteIncome = useCallback((id: string) => {
+    setData((d) => ({ ...d, incomes: d.incomes.filter((e) => e.id !== id) }));
+  }, []);
+
   const removeSampleData = useCallback(() => {
-    setData((d) => ({ ...d, expenses: d.expenses.filter((e) => !e.isSample) }));
+    setData((d) => ({
+      ...d,
+      expenses: d.expenses.filter((e) => !e.isSample),
+      incomes: d.incomes.filter((e) => !e.isSample),
+    }));
   }, []);
 
   const clearAllExpenses = useCallback(() => {
@@ -136,6 +162,7 @@ export function ExpenseProvider({
     () => ({
       hydrated,
       expenses: data.expenses,
+      incomes: data.incomes,
       categories,
       customCategories: data.customCategories,
       settings: data.settings,
@@ -144,6 +171,9 @@ export function ExpenseProvider({
       addExpense,
       updateExpense,
       deleteExpense,
+      addIncome,
+      updateIncome,
+      deleteIncome,
       removeSampleData,
       clearAllExpenses,
       addCategory,
@@ -158,6 +188,9 @@ export function ExpenseProvider({
       addExpense,
       updateExpense,
       deleteExpense,
+      addIncome,
+      updateIncome,
+      deleteIncome,
       removeSampleData,
       clearAllExpenses,
       addCategory,

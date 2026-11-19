@@ -9,7 +9,7 @@ import { EmptyState } from "@/components/expenses/EmptyState";
 import { PageHeader, SectionTitle } from "@/components/expenses/PageHeader";
 import { StatCard } from "@/components/expenses/StatCard";
 import { Card } from "@/components/ui/card";
-import { averageDailySpending, budgetStatus, expensesInMonth, expensesInRange, sumAmounts, weekRange } from "@/lib/expenses/calc";
+import { averageDailySpending, budgetStatus, expensesInMonth, sumAmounts, weekRange, weeklyBudgetStatus } from "@/lib/expenses/calc";
 import { MONTH_NAMES } from "@/lib/expenses/constants";
 import { formatMoney } from "@/lib/expenses/format";
 import { useExpenses } from "@/lib/expenses/store";
@@ -30,7 +30,7 @@ export const Route = createFileRoute("/budget")({
 });
 
 function BudgetPage() {
-  const { expenses, settings } = useExpenses();
+  const { expenses, incomes, settings } = useExpenses();
   const cur = settings.currency;
 
   const b = useMemo(() => {
@@ -47,10 +47,10 @@ function BudgetPage() {
       daysLeft,
       projected: Math.round(avg * dim),
       status: budgetStatus(spent, settings.monthlyBudget),
-      week: budgetStatus(sumAmounts(expensesInRange(expenses, weekRange(today).start, weekRange(today).end)), settings.weeklyBudget),
+      week: weeklyBudgetStatus(expenses, incomes, settings, weekRange(today).start),
     };
-  }, [expenses, settings.monthlyBudget, settings.weeklyBudget]);
-  const wk = settings.weeklyBudgetEnabled ? b.week : null;
+  }, [expenses, incomes, settings]);
+  const wk = b.week;
 
   const s = settings.budgetEnabled ? b.status : null;
   const perDay = s && s.remaining > 0 ? Math.floor(s.remaining / b.daysLeft) : 0;

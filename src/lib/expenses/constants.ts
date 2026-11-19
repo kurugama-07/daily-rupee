@@ -54,7 +54,12 @@ export const DEFAULT_SETTINGS: Settings = {
   budgetEnabled: false,
   weeklyBudget: null,
   weeklyBudgetEnabled: false,
+  weeklyBudgetSource: "fixed",
+  walletCarryOver: true,
 };
+
+/** One-tap sources for money received. */
+export const INCOME_QUICK_PICKS = ["Pocket money", "Salary", "From family", "Part-time work", "Freelance", "Gift"] as const;
 
 export const QUICK_PICKS: { title: string; category: string }[] = [
   { title: "Breakfast", category: "food" },

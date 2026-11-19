@@ -1,5 +1,6 @@
 import { subDays } from "date-fns";
 
+import { DEFAULT_SETTINGS } from "./constants";
 import { toDateKey } from "./calc";
 import type { AppData, Expense, PaymentMethod } from "./types";
 
@@ -72,7 +73,8 @@ export function createInitialData(today: Date): AppData {
   return {
     version: 1,
     expenses: generateSampleExpenses(today),
+    incomes: [],
     customCategories: [],
-    settings: { currency: "LKR", monthlyBudget: 120000, budgetEnabled: true, weeklyBudget: null, weeklyBudgetEnabled: false },
+    settings: { ...DEFAULT_SETTINGS, monthlyBudget: 120000, budgetEnabled: true },
   };
 }

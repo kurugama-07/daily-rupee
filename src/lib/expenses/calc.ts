@@ -1,7 +1,7 @@
 import { addDays, endOfWeek, format, getDaysInMonth, parseISO, startOfWeek, subMonths, subWeeks } from "date-fns";
 
 import { BUDGET_WARNING_PERCENT } from "./constants";
-import type { Expense } from "./types";
+import type { Expense, Income, Settings } from "./types";
 
 /** Pure calculation helpers. Every dashboard figure is derived from these. */
 
@@ -265,13 +265,106 @@ export interface BudgetStatus {
   level: BudgetLevel;
 }
 
-/** Warning from 80% of the budget; "exceeded" once spending goes over it. */
-export function budgetStatus(spent: number, budget: number | null | undefined): BudgetStatus | null {
-  if (!budget || budget <= 0) return null;
-  const percent = (spent / budget) * 100;
+/**
+ * Warning from 80% of the budget; "exceeded" once spending goes over it.
+ * `allowEmpty` keeps a zero/negative budget (an empty wallet) instead of returning null.
+ */
+export function budgetStatus(
+  spent: number,
+  budget: number | null | undefined,
+  opts: { allowEmpty?: boolean } = {},
+): BudgetStatus | null {
+  if (budget === null || budget === undefined || !Number.isFinite(budget)) return null;
+  if (budget <= 0 && !opts.allowEmpty) return null;
+  const remaining = round2(budget - spent);
+  const percent = budget > 0 ? (spent / budget) * 100 : spent > 0 || budget < 0 ? 100 : 0;
   const level: BudgetLevel =
-    spent > budget ? "exceeded" : percent >= BUDGET_WARNING_PERCENT ? "warning" : "ok";
-  return { budget, spent: round2(spent), remaining: round2(budget - spent), percent: round2(percent), level };
+    remaining < 0 ? "exceeded" : budget > 0 && percent >= BUDGET_WARNING_PERCENT ? "warning" : "ok";
+  return { budget: round2(budget), spent: round2(spent), remaining, percent: round2(percent), level };
+}
+
+/* ---------- Wallet: money received each week, spending deducted from it ---------- */
+
+export function sumIncome(list: readonly Income[]): number {
+  return round2(list.reduce((t, e) => t + e.amount, 0));
+}
+
+export function incomesInRange(list: readonly Income[], start: string, end: string) {
+  return list.filter((e) => e.date >= start && e.date <= end);
+}
+
+export interface WalletWeek {
+  start: string;
+  end: string;
+  /** Money received during the week */
+  received: number;
+  /** Money spent during the week */
+  spent: number;
+  /** Balance brought forward from earlier weeks (0 unless carry-over is on) */
+  carryIn: number;
+  /** carryIn + received */
+  available: number;
+  /** available - spent */
+  left: number;
+  incomeCount: number;
+}
+
+/** Leftover from all weeks before `weekStart`, counted from the week of the first money received. */
+export function walletCarryIn(expenses: readonly Expense[], incomes: readonly Income[], weekStart: string): number {
+  const earlier = incomes.filter((i) => i.date < weekStart);
+  if (!earlier.length) return 0;
+  const first = earlier.reduce((m, i) => (i.date < m ? i.date : m), earlier[0]!.date);
+  const from = weekStartKey(parseISO(first));
+  const dayBefore = toDateKey(addDays(parseISO(weekStart), -1));
+  return round2(sumIncome(earlier) - sumAmounts(expensesInRange(expenses, from, dayBefore)));
+}
+
+export function walletWeek(
+  expenses: readonly Expense[],
+  incomes: readonly Income[],
+  weekStart: string,
+  carryOver: boolean,
+): WalletWeek {
+  const end = toDateKey(addDays(parseISO(weekStart), 6));
+  const inWeek = incomesInRange(incomes, weekStart, end);
+  const received = sumIncome(inWeek);
+  const spent = sumAmounts(expensesInRange(expenses, weekStart, end));
+  const carryIn = carryOver ? walletCarryIn(expenses, incomes, weekStart) : 0;
+  const available = round2(carryIn + received);
+  return { start: weekStart, end, received, spent, carryIn, available, left: round2(available - spent), incomeCount: inWeek.length };
+}
+
+/** Wallet weeks for the last `count` weeks ending with the week containing `today`, oldest first. */
+export function walletHistory(
+  expenses: readonly Expense[],
+  incomes: readonly Income[],
+  today: Date,
+  count: number,
+  carryOver: boolean,
+): WalletWeek[] {
+  const current = startOfWeek(today, { weekStartsOn: WEEK_STARTS_ON });
+  return Array.from({ length: count }, (_, idx) =>
+    walletWeek(expenses, incomes, toDateKey(subWeeks(current, count - 1 - idx)), carryOver),
+  );
+}
+
+/**
+ * The weekly limit status for the week starting at `weekStart`, whichever way it's set:
+ * a fixed amount, or the money received that week (wallet). Every page uses this.
+ */
+export function weeklyBudgetStatus(
+  expenses: readonly Expense[],
+  incomes: readonly Income[],
+  settings: Pick<Settings, "weeklyBudgetEnabled" | "weeklyBudget" | "weeklyBudgetSource" | "walletCarryOver">,
+  weekStart: string,
+): BudgetStatus | null {
+  if (!settings.weeklyBudgetEnabled) return null;
+  if (settings.weeklyBudgetSource === "wallet") {
+    const w = walletWeek(expenses, incomes, weekStart, settings.walletCarryOver);
+    return budgetStatus(w.spent, w.available, { allowEmpty: true });
+  }
+  const end = toDateKey(addDays(parseISO(weekStart), 6));
+  return budgetStatus(sumAmounts(expensesInRange(expenses, weekStart, end)), settings.weeklyBudget);
 }
 
 export interface ExpenseFilters {

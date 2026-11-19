@@ -16,6 +16,7 @@ import { Route as BudgetRouteImport } from './routes/budget'
 import { Route as DailyRouteImport } from './routes/daily'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as WalletRouteImport } from './routes/wallet'
 import { Route as WeeklyRouteImport } from './routes/weekly'
 
 const IndexRoute = IndexRouteImport.update({
@@ -53,6 +54,11 @@ const SettingsRoute = SettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WalletRoute = WalletRouteImport.update({
+  id: '/wallet',
+  path: '/wallet',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WeeklyRoute = WeeklyRouteImport.update({
   id: '/weekly',
   path: '/weekly',
@@ -67,6 +73,7 @@ export interface FileRoutesByFullPath {
   '/daily': typeof DailyRoute
   '/history': typeof HistoryRoute
   '/settings': typeof SettingsRoute
+  '/wallet': typeof WalletRoute
   '/weekly': typeof WeeklyRoute
 }
 export interface FileRoutesByTo {
@@ -77,6 +84,7 @@ export interface FileRoutesByTo {
   '/daily': typeof DailyRoute
   '/history': typeof HistoryRoute
   '/settings': typeof SettingsRoute
+  '/wallet': typeof WalletRoute
   '/weekly': typeof WeeklyRoute
 }
 export interface FileRoutesById {
@@ -88,6 +96,7 @@ export interface FileRoutesById {
   '/daily': typeof DailyRoute
   '/history': typeof HistoryRoute
   '/settings': typeof SettingsRoute
+  '/wallet': typeof WalletRoute
   '/weekly': typeof WeeklyRoute
 }
 export interface FileRouteTypes {
@@ -100,6 +109,7 @@ export interface FileRouteTypes {
     | '/daily'
     | '/history'
     | '/settings'
+    | '/wallet'
     | '/weekly'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -110,6 +120,7 @@ export interface FileRouteTypes {
     | '/daily'
     | '/history'
     | '/settings'
+    | '/wallet'
     | '/weekly'
   id:
     | '__root__'
@@ -120,6 +131,7 @@ export interface FileRouteTypes {
     | '/daily'
     | '/history'
     | '/settings'
+    | '/wallet'
     | '/weekly'
   fileRoutesById: FileRoutesById
 }
@@ -131,6 +143,7 @@ export interface RootRouteChildren {
   DailyRoute: typeof DailyRoute
   HistoryRoute: typeof HistoryRoute
   SettingsRoute: typeof SettingsRoute
+  WalletRoute: typeof WalletRoute
   WeeklyRoute: typeof WeeklyRoute
 }
 
@@ -185,6 +198,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/wallet': {
+      id: '/wallet'
+      path: '/wallet'
+      fullPath: '/wallet'
+      preLoaderRoute: typeof WalletRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/weekly': {
       id: '/weekly'
       path: '/weekly'
@@ -203,6 +223,7 @@ const rootRouteChildren: RootRouteChildren = {
   DailyRoute: DailyRoute,
   HistoryRoute: HistoryRoute,
   SettingsRoute: SettingsRoute,
+  WalletRoute: WalletRoute,
   WeeklyRoute: WeeklyRoute,
 }
 export const routeTree = rootRouteImport

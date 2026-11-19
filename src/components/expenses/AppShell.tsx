@@ -3,6 +3,7 @@ import {
   BarChart3,
   CalendarDays,
   CalendarRange,
+  HandCoins,
   LayoutDashboard,
   MoreHorizontal,
   Plus,
@@ -15,13 +16,13 @@ import { useState, type ReactNode } from "react";
 
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
-import { budgetStatus, expensesInMonth, expensesInRange, sumAmounts, weekRange } from "@/lib/expenses/calc";
+import { expensesInMonth, sumAmounts, weekRange, weeklyBudgetStatus } from "@/lib/expenses/calc";
 import { formatMoney } from "@/lib/expenses/format";
 import { useExpenses } from "@/lib/expenses/store";
 import { ThemeIconButton, ThemeSegmented } from "@/components/expenses/ThemeToggle";
 import { cn } from "@/lib/utils";
 
-type NavPath = "/" | "/add" | "/history" | "/daily" | "/weekly" | "/analytics" | "/budget" | "/settings";
+type NavPath = "/" | "/add" | "/history" | "/daily" | "/weekly" | "/wallet" | "/analytics" | "/budget" | "/settings";
 
 const NAV: { to: NavPath; label: string; icon: LucideIcon }[] = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -29,6 +30,7 @@ const NAV: { to: NavPath; label: string; icon: LucideIcon }[] = [
   { to: "/history", label: "Expense History", icon: ReceiptText },
   { to: "/daily", label: "Daily Breakdown", icon: CalendarDays },
   { to: "/weekly", label: "Weekly Spending", icon: CalendarRange },
+  { to: "/wallet", label: "Wallet", icon: HandCoins },
   { to: "/analytics", label: "Analytics", icon: BarChart3 },
   { to: "/budget", label: "Budget", icon: Wallet },
   { to: "/settings", label: "Settings", icon: Settings },
@@ -57,14 +59,12 @@ function Brand({ inverted }: { inverted?: boolean }) {
 }
 
 function MonthMini() {
-  const { expenses, settings, hydrated } = useExpenses();
+  const { expenses, incomes, settings, hydrated } = useExpenses();
   const now = new Date();
   if (!hydrated) return null;
   const total = sumAmounts(expensesInMonth(expenses, now.getFullYear(), now.getMonth()));
   const wk = weekRange(now);
-  const week = settings.weeklyBudgetEnabled
-    ? budgetStatus(sumAmounts(expensesInRange(expenses, wk.start, wk.end)), settings.weeklyBudget)
-    : null;
+  const week = weeklyBudgetStatus(expenses, incomes, settings, wk.start);
   return (
     <div className="rounded-2xl bg-sidebar-accent p-4">
       <p className="text-xs text-sidebar-foreground/65">Spent this month</p>
@@ -137,7 +137,7 @@ function MobileBottomNav() {
   const [moreOpen, setMoreOpen] = useState(false);
   const left = NAV.filter((n) => n.to === "/" || n.to === "/history");
   const right = NAV.filter((n) => n.to === "/daily");
-  const more = NAV.filter((n) => n.to === "/weekly" || n.to === "/analytics" || n.to === "/budget" || n.to === "/settings");
+  const more = NAV.filter((n) => n.to === "/weekly" || n.to === "/wallet" || n.to === "/analytics" || n.to === "/budget" || n.to === "/settings");
   const navLink = (item: (typeof NAV)[number]) => (
     <Link
       key={item.to}

@@ -36,6 +36,7 @@ import {
   sumAmounts,
   toDateKey,
   weekRange,
+  weeklyBudgetStatus,
 } from "@/lib/expenses/calc";
 import { MONTH_NAMES } from "@/lib/expenses/constants";
 import { formatDateWithWeekday, formatMoney, formatPercent } from "@/lib/expenses/format";
@@ -61,7 +62,7 @@ function greeting(h: number) {
 }
 
 function DashboardPage() {
-  const { expenses, settings, getCategory } = useExpenses();
+  const { expenses, incomes, settings, getCategory } = useExpenses();
   const cur = settings.currency;
 
   const s = useMemo(() => {
@@ -86,7 +87,7 @@ function DashboardPage() {
       todayTotal: sumAmounts(expenses.filter((e) => e.date === todayKey)),
       todayCount: expenses.filter((e) => e.date === todayKey).length,
       weekTotal,
-      weekBudget: settings.weeklyBudgetEnabled ? budgetStatus(weekTotal, settings.weeklyBudget) : null,
+      weekBudget: weeklyBudgetStatus(expenses, incomes, settings, week.start),
       monthTotal,
       prevTotal,
       avgDaily: averageDailySpending(expenses, y, m, today),
@@ -102,7 +103,7 @@ function DashboardPage() {
         .slice(0, 6),
       budget: settings.budgetEnabled ? budgetStatus(monthTotal, settings.monthlyBudget) : null,
     };
-  }, [expenses, settings.budgetEnabled, settings.monthlyBudget, settings.weeklyBudgetEnabled, settings.weeklyBudget]);
+  }, [expenses, incomes, settings]);
 
   const up = (s.changeToDate ?? 0) > 0;
   const maxCompare = Math.max(s.monthTotal, s.prevTotal, 1);
@@ -207,7 +208,7 @@ function DashboardPage() {
             </div>
             {s.weekBudget && (
               <div className="border-t pt-4">
-                <p className="mb-3 text-sm font-semibold">Weekly budget</p>
+                <p className="mb-3 text-sm font-semibold">{settings.weeklyBudgetSource === "wallet" ? "Weekly wallet" : "Weekly budget"}</p>
                 <BudgetSummary status={s.weekBudget} currency={cur} />
                 {s.weekBudget.level !== "ok" && (
                   <div className="mt-3">

@@ -208,3 +208,27 @@ export function MonthlyBarChart({
     </ResponsiveContainer>
   );
 }
+
+/** Money received vs money spent, side by side for each period. */
+export function InOutBarChart({
+  data,
+  currency,
+  height = 220,
+}: {
+  data: { key: string; label: string; received: number; spent: number }[];
+  currency: string;
+  height?: number;
+}) {
+  return (
+    <ResponsiveContainer width="100%" height={height}>
+      <BarChart data={data} margin={{ top: 8, right: 4, left: -12, bottom: 0 }} barGap={2}>
+        <CartesianGrid vertical={false} stroke="var(--border)" strokeDasharray="3 3" />
+        <XAxis dataKey="label" tick={axisTick} tickLine={false} axisLine={false} interval={0} minTickGap={0} fontSize={10} />
+        <YAxis tick={axisTick} tickLine={false} axisLine={false} tickFormatter={(v: number) => formatCompact(v)} width={48} />
+        <Tooltip content={<ChartTip currency={currency} />} cursor={{ fill: "var(--muted)" }} />
+        <Bar dataKey="received" name="Received" fill="var(--chart-1)" radius={[5, 5, 2, 2]} maxBarSize={16} />
+        <Bar dataKey="spent" name="Spent" fill="var(--chart-4)" radius={[5, 5, 2, 2]} maxBarSize={16} />
+      </BarChart>
+    </ResponsiveContainer>
+  );
+}

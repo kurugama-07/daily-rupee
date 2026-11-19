@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { PAYMENT_METHOD_IDS } from "./constants";
 import { toDateKey } from "./calc";
-import type { ExpenseInput } from "./types";
+import type { ExpenseInput, IncomeInput } from "./types";
 
 export const MAX_AMOUNT = 100_000_000;
 
@@ -51,6 +51,37 @@ export function parseExpenseInput(raw: RawExpenseInput, today: Date = new Date()
   if (!errors.date && raw.date > toDateKey(today)) errors.date = "Date can't be in the future";
   if (!result.success || Object.keys(errors).length) return { success: false, errors };
   return { success: true, data: { ...result.data, amount: Math.round(result.data.amount * 100) / 100 } };
+}
+
+export interface RawIncomeInput {
+  title: string;
+  amount: string;
+  date: string;
+  notes: string;
+}
+
+export type IncomeFieldErrors = Partial<Record<keyof IncomeInput, string>>;
+
+/** Validates money received. Same amount rules as expenses: positive, numeric, not in the future. */
+export function parseIncomeInput(
+  raw: RawIncomeInput,
+  today: Date = new Date(),
+): { success: true; data: IncomeInput } | { success: false; errors: IncomeFieldErrors } {
+  const errors: IncomeFieldErrors = {};
+  const title = raw.title.trim();
+  if (!title) errors.title = "Where did this money come from?";
+  else if (title.length > 60) errors.title = "Keep it under 60 characters";
+  const cleaned = raw.amount.replace(/,/g, "").trim();
+  const amount = cleaned === "" || !/^-?\d*\.?\d+$/.test(cleaned) ? Number.NaN : Number(cleaned);
+  if (!Number.isFinite(amount)) errors.amount = "Enter a valid amount";
+  else if (amount <= 0) errors.amount = "Amount must be greater than zero";
+  else if (amount > MAX_AMOUNT) errors.amount = "That amount looks too large";
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(raw.date)) errors.date = "Pick a valid date";
+  else if (raw.date > toDateKey(today)) errors.date = "Date can't be in the future";
+  const notes = raw.notes.trim();
+  if (notes.length > 300) errors.notes = "Notes must be under 300 characters";
+  if (Object.keys(errors).length) return { success: false, errors };
+  return { success: true, data: { title, amount: Math.round(amount * 100) / 100, date: raw.date, notes } };
 }
 
 export function validateCategoryName(name: string, existing: string[]): string | null {
