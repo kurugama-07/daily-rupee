@@ -37,7 +37,7 @@ function FieldError({ message }: { message?: string | undefined }) {
 }
 
 /** Log money received: amount, where it came from, date and optional notes. */
-export function IncomeForm({ initial, onSaved, defaultDate }: { initial?: Income; onSaved?: () => void; defaultDate?: string }) {
+export function IncomeForm({ initial, onSaved, defaultDate }: { initial?: Income; onSaved?: () => void; defaultDate?: string | undefined }) {
   const { settings, addIncome, updateIncome } = useExpenses();
   const todayKey = toDateKey(new Date());
   const [title, setTitle] = useState(initial?.title ?? "");
