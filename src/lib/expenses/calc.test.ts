@@ -8,10 +8,13 @@ import {
   weekDailyTotals,
   weekRange,
   weekStartKey,
+  walletWeek,
+  weeklyBudgetStatus,
   weeklyHistory,
 } from "./calc";
-import type { Expense } from "./types";
-import { parseBudget, parseExpenseInput } from "./validation";
+import { DEFAULT_SETTINGS } from "./constants";
+import type { Expense, Income } from "./types";
+import { parseBudget, parseExpenseInput, parseIncomeInput } from "./validation";
 
 const mk = (date: string, amount: number): Expense => ({
   id: `${date}-${amount}`,
@@ -123,5 +126,55 @@ describe("weekly budget", () => {
   it("totals recent weeks oldest first", () => {
     const h = weeklyHistory([mk("2026-11-03", 700), mk("2026-11-12", 300)], today, 2);
     expect(h.map((w) => [w.start, w.total])).toEqual([["2026-11-01", 700], ["2026-11-08", 300]]);
+  });
+});
+
+const inc = (date: string, amount: number): Income => ({
+  id: `in-${date}-${amount}`,
+  title: "Pocket money",
+  amount,
+  date,
+  notes: "",
+  createdAt: `${date}T08:00:00.000Z`,
+  updatedAt: `${date}T08:00:00.000Z`,
+});
+
+describe("wallet", () => {
+  const walletSettings = { ...DEFAULT_SETTINGS, weeklyBudgetEnabled: true, weeklyBudgetSource: "wallet" as const };
+
+  it("deducts the week's spending from money received that week", () => {
+    const w = walletWeek([mk("2026-11-09", 1200)], [inc("2026-11-08", 5000)], "2026-11-08", false);
+    expect(w.received).toBe(5000);
+    expect(w.left).toBe(3800);
+  });
+  it("uses money received as the weekly limit instead of a fixed amount", () => {
+    const s = weeklyBudgetStatus([mk("2026-11-09", 1200)], [inc("2026-11-08", 5000)], { ...walletSettings, weeklyBudget: 9000 }, "2026-11-08");
+    expect(s?.budget).toBe(5000);
+    expect(s?.remaining).toBe(3800);
+  });
+  it("carries last week's leftover into this week when carry-over is on", () => {
+    const expenses = [mk("2026-11-03", 3000), mk("2026-11-10", 1000)];
+    const incomes = [inc("2026-11-01", 5000), inc("2026-11-08", 4000)];
+    const w = walletWeek(expenses, incomes, "2026-11-08", true);
+    expect(w.carryIn).toBe(2000);
+    expect(w.left).toBe(5000);
+  });
+  it("starts fresh each week when carry-over is off", () => {
+    const incomes = [inc("2026-11-01", 5000), inc("2026-11-08", 4000)];
+    expect(walletWeek([mk("2026-11-03", 3000)], incomes, "2026-11-08", false).carryIn).toBe(0);
+  });
+  it("is over budget when spending with no money received", () => {
+    const s = weeklyBudgetStatus([mk("2026-11-09", 500)], [], walletSettings, "2026-11-08");
+    expect(s?.level).toBe("exceeded");
+    expect(s?.remaining).toBe(-500);
+  });
+  it("carries over leftover by default", () => {
+    expect(DEFAULT_SETTINGS.walletCarryOver).toBe(true);
+  });
+  it("rejects negative or zero money received", () => {
+    const base = { title: "Salary", amount: "5000", date: "2026-11-14", notes: "" };
+    expect(parseIncomeInput(base, today).success).toBe(true);
+    expect(parseIncomeInput({ ...base, amount: "-5" }, today).success).toBe(false);
+    expect(parseIncomeInput({ ...base, amount: "0" }, today).success).toBe(false);
   });
 });

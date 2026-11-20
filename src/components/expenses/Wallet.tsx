@@ -38,7 +38,7 @@ function FieldError({ message }: { message?: string | undefined }) {
 
 /** Log money received: amount, where it came from, date and optional notes. */
 export function IncomeForm({ initial, onSaved, defaultDate }: { initial?: Income; onSaved?: () => void; defaultDate?: string | undefined }) {
-  const { settings, addIncome, updateIncome } = useExpenses();
+  const { settings, addIncome, updateIncome, updateSettings } = useExpenses();
   const todayKey = toDateKey(new Date());
   const [title, setTitle] = useState(initial?.title ?? "");
   const [amount, setAmount] = useState(initial ? String(initial.amount) : "");
@@ -60,7 +60,12 @@ export function IncomeForm({ initial, onSaved, defaultDate }: { initial?: Income
       toast.success("Money received updated");
     } else {
       addIncome(res.data);
-      toast.success(`${formatMoney(res.data.amount, settings.currency)} added to your wallet`);
+      const switching = settings.weeklyBudgetSource !== "wallet" || !settings.weeklyBudgetEnabled;
+      // Logging money means the weekly limit should come from the wallet, not a fixed amount.
+      if (switching) updateSettings({ weeklyBudgetSource: "wallet", weeklyBudgetEnabled: true });
+      toast.success(`${formatMoney(res.data.amount, settings.currency)} added to your wallet`, {
+        description: switching ? "Your weekly limit now comes from the money you receive." : undefined,
+      });
       setAmount("");
       setNotes("");
     }

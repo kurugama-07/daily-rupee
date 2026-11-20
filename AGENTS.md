@@ -32,6 +32,7 @@ use the editor.
 ## Project rules
 
 - Monthly and weekly budgets share `budgetStatus` in `src/lib/expenses/calc.ts`; add new budget periods there, not in components — keeps warning thresholds identical everywhere.
+- Every page gets the weekly limit from `weeklyBudgetStatus` in `src/lib/expenses/calc.ts` (fixed amount or wallet money received); never compute it in components — dashboard, weekly, wallet and budget pages must agree.
 - The week start lives only in `WEEK_STARTS_ON` in `src/lib/expenses/calc.ts`; every calculation uses it — dashboard, weekly page and budgets must agree on "this week".
 - Theme (light/dark/system) is applied by a pre-paint inline script in `__root.tsx` plus `src/lib/theme.ts`; keep the storage key in sync between them — avoids a light flash on load.
 - Load the Netlify Vite plugin in `vite.config.ts` only behind the `NETLIFY` env check via dynamic import; importing it eagerly crashes the Lovable dev server.
